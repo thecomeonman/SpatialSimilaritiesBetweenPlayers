@@ -27,7 +27,7 @@ cPostCodeFolderLocation = '/media/ask/Data/Personal/Projects/Personal/AnalysingF
 cPostDataFolderLocation = '/media/ask/Data/Personal/Projects/Personal/NoSuchThingAs4231'
 
 source(paste0(cPostCodeFolderLocation, '/Common.R'))
-read_chunk(paste0(cPostCodeFolderLocation, '/CommonChunks.R'))
+read_chunk(paste0(cPostCodeFolderLocation, '/CommonChunksSimilarPlayers.R'))
 
 iChunks = 100
 iNbrPlayerToShortlist = 16
@@ -69,7 +69,7 @@ In this post, I try to quantify these and find players who play similar roles in
 
 This logic by itself isn't a sufficient measure of similar players, for instance it doesn't include physical attributes of pace, stamina, etc. quality of shooting, passing, etc. quality of awareness, positioning, etc. but this could be used as an addition to these more traditional measures.
 
-## Methodology
+## Methodology {.tabset .tabset-fade .tabset-pills}
 
 ### To compare players in isolation:
 
@@ -80,7 +80,8 @@ This logic by itself isn't a sufficient measure of similar players, for instance
     * all the locations where the player received a pass at i.e. the location of the player when he received the ball I will address this as (xend1, yend1)
     * all the locations where the player passed from i.e. the location of the player when he passed the ball to another player. I will address this as (xstart2, ystart2) 
     * all the locations the player passed to i.e. the location of the recipient of the pass when he received the ball. I will address this as (xend2, yend2)
-eg. if we are interested in player B, then for a play in which player A passed to player B and then player B passed to player C, we'd see two passes - pass 1 which went from A at location Start1 to B at location End1, and then pass 2 which went from B at location Start2 to C at location End2, with player B having moved with the ball from location End2 to location Start2.
+
+eg. if we are interested in player B, then for a play in which player A passed to player B and then player B passed to player C, we'd see two passes - pass 1 which went from A at location Start1 to B at location End1, and then pass 2 which went from B at location Start2 to C at location End2, with player B having moved with the ball from location End1 to location Start2.
 
 ```{r DataExample, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 6, results = 'asis'}
 
@@ -110,21 +111,17 @@ Each of those four points contribute to the four different datasets desribed abo
 
 Using the player comparison metric, compare all eleven players of a team in one match with all eleven players of a team in a match. Find a one to one matching between players such that the sum of distances within all eleven pairs is the smallest. This can be solved as an assignment problem.
 
-The average of these eleven distances or is a measure of how similar the two teams passed which can be assumed to be a proxy for how similarly the two teams were positioned. The smaller the sum of distances, the closer the formations of the two teams. The maximum distance amongst these eleven distances is a stricter measure which can be used for the same purpose and this is what I use.
+The sum or average of these eleven distances or is a measure of how similar the two teams passed which can be assumed to be a proxy for how similarly the two teams were positioned. The smaller the sum of distances, the closer the formations of the two teams. The maximum distance amongst these eleven distances is a stricter measure which can be used for the same purpose and this is what I use.
 
-### 
+Here are some examples of comparisons of the same team in two different matches to get a feel for how the pairing works.
 
-### Additional notes:
+For each comparison, of all the possible ( 11 * 10 * 9 ... * 1 ) = 11! possible pairings between the 11 players in each match, the one with the least sum of distances across each player pair is chosen as the best pairing.
 
-* Passing data is probably more reflective of attacking similarity than defensive similarity.
+```{r PairingExamplesHomogenous, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+```
 
-* For more role specific distances, the distance measure can be extended to any other spatial distribution as well, eg. locations where the player shoots from, where the player tackles, etc. While defensive actions get ignored, my hope is that the offensive actions indirectly still get captured, for instance if you expect to see a player shoot from certain positions, you may have less passes from the same position for him and that should cause the distance to increase between him and another player who tends to pass from that same position.
 
-* I only used data from matches for the 2017-18 season of the EPL, the EFL, Ligue 1, La Liga, Bundesliga, and Serie A. As a case study, I've taken a few players who were rumoured to be or were on the move around that time.
-
-* I could have chosen to calculate the distance between the start and end coordinates of the passes as two four dimensional data (xstart1, ystart1, xend1, yend1) and (xstart2, ystart2, xend2, yend2). I instead choose to calculate the distance between the set of starting points and the ending points separately as four two dimensional datasets (xstart1, ystart1), (xend1, yend1), (xstart2, ystart2), and (xend2, yend2). Cons - A player who passes from xy1 to xy2, and xy3 to xy4, and another player who passes from xy1 to xy4, and xy3 to xy2, would have 0 distance in the chosen methodology which would be incorrect. Pros - it is easier to understand the reasons for the overall distance between two distributions. The case in the cons is probably rare and the interpretability is worth that loss.
-
-## EMD Illustration
+### EMD Illustration
 
 It is a measure of the amount of change needed to transform one distribution to another. For instance, if you have two distributions, one concentrated 100% at (0,0) and another 50% at (0,1) and 50% at (1,1) then the EMD between them would be `r emd(
     matrix(c(1, 0, 0), 1), 
@@ -138,6 +135,16 @@ It is a measure of the amount of change needed to transform one distribution to 
 )` )
 
 Here is an example from the dataset. Three distributions of points on the pitch, and the EMD between them are shown below. These three distributions are of locations from where `r dtPlayers[playerId == viPlayerId[1], name[1]]` made passes against these teams.
+
+### Additional notes:
+
+* Passing data is probably more reflective of attacking similarity than defensive similarity.
+
+* For more role specific distances, the distance measure can be extended to any other spatial distribution as well, eg. locations where the player shoots from, where the player tackles, etc. While defensive actions get ignored, my hope is that the offensive actions indirectly still get captured, for instance if you expect to see a player shoot from certain positions, you may have less passes from the same position for him and that should cause the distance to increase between him and another player who tends to pass from that same position.
+
+* I only used data from matches for the 2017-18 season of the EPL, the EFL, Ligue 1, La Liga, Bundesliga, and Serie A. As a case study, I've taken a few players who were rumoured to be or were on the move around that time.
+
+* I could have chosen to calculate the distance between the start and end coordinates of the passes as two four dimensional data (xstart1, ystart1, xend1, yend1) and (xstart2, ystart2, xend2, yend2). I instead choose to calculate the distance between the set of starting points and the ending points separately as four two dimensional datasets (xstart1, ystart1), (xend1, yend1), (xstart2, ystart2), and (xend2, yend2). Cons - A player who passes from xy1 to xy2, and xy3 to xy4, and another player who passes from xy1 to xy4, and xy3 to xy2, would have 0 distance in the chosen methodology which would be incorrect. Pros - it is easier to understand the reasons for the overall distance between two distributions. The case in the cons is probably rare and the interpretability is worth that loss.
 
 ```{r EMDExample, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
 ```
