@@ -1,5 +1,5 @@
 ---
-title: "Finding Similar Players With Spatial Playing Similarities"
+title: "Finding Similar Players Through Spatial Similarities"
 author: "Aditya Kothari"
 date: "May 2019"
 output: html_document
@@ -63,9 +63,11 @@ dtDistancMatchFileNames = merge(
 
 ## Motivation
 
-Formations and player roles are a very fuzzy concept. We simplify things into 4-2-3-1s and 4-3-3s and right backs and centre forwards but even within those simplifications there are many nuances to how different teams and different players function.
+Formations and player roles are a very fuzzy concept. We simplify things into 4-2-3-1s and 4-3-3s and right backs and centre forwards but within those simplifications there are many nuances to how different teams and different players function.
 
-In this post, I try to quantify these and find players who play similar roles in their respective teams. This logic by itself isn't a sufficient measure of similar players, for instance it doesn't include physical attributes of pace, stamina, etc. quality of shooting, passing, etc. quality of awareness, positioning, etc. but this could be used as an addition to these more traditional measures.
+In this post, I try to quantify these and find players who play similar roles in their respective teams.
+
+This logic by itself isn't a sufficient measure of similar players, for instance it doesn't include physical attributes of pace, stamina, etc. quality of shooting, passing, etc. quality of awareness, positioning, etc. but this could be used as an addition to these more traditional measures.
 
 ## Methodology
 
@@ -102,7 +104,7 @@ pEMD +
 
 Each of those four points contribute to the four different datasets desribed above.
 
-3. Compare each of those four distribution with the respective distributions of all other players and matches. Use a distance measure ( earth mover's distance ) to decide whether the distribution of two players are similar.
+3. Compare each of those four distribution with the respective distributions of all other players in their matches. Use a distance measure ( earth mover's distance ) to decide whether the distribution of two players are similar.
 
 ### To compare teams:
 
@@ -116,7 +118,7 @@ The average of these eleven distances or is a measure of how similar the two tea
 
 * Passing data is probably more reflective of attacking similarity than defensive similarity.
 
-* For more role specific distances, the distance measure can be extended to any other spatial distribution as well, eg. locations where the player shoots from, where the player tackles, etc. 
+* For more role specific distances, the distance measure can be extended to any other spatial distribution as well, eg. locations where the player shoots from, where the player tackles, etc. While defensive actions get ignored, my hope is that the offensive actions indirectly still get captured, for instance if you expect to see a player shoot from certain positions, you may have less passes from the same position for him and that should cause the distance to increase between him and another player who tends to pass from that same position.
 
 * I only used data from matches for the 2017-18 season of the EPL, the EFL, Ligue 1, La Liga, Bundesliga, and Serie A. As a case study, I've taken a few players who were rumoured to be or were on the move around that time.
 
@@ -144,7 +146,7 @@ Note how the game against WBA as a very different set of points where passes wer
 
 ## Cases {.tabset .tabset-fade .tabset-pills}
 
-I walk through the process for these players for one match each. Repeating this process for other matches of the same player in a similar role, and looking at the candidates getting shortlisted more often across these matches would be a strong list of players who play very similarly to the respective player.
+I walk through the process for these players, which cover most areas of the pitch, for one match each. Repeating this process for other matches of the same player in a similar role, and looking at the candidates getting shortlisted more often across these matches would be a strong list of players who play very similarly to the respective player.
 
 ```{r SimilarPlayer1.1, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 15, results = 'asis'}
 iPlayerId = viPlayerId[1]
@@ -205,7 +207,7 @@ Regardless of player distance, teams in specific matches who had some of smalles
 ```{r SimilarPlayer1.4.2Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-##### A combination of team and player distance
+##### Team and player distance combined
 
 Finding the players at the least distance from `r cName` by giving equal weightage to player and team distance. I feel that both these factors should be considered somehow.
 
@@ -214,6 +216,20 @@ Finding the players at the least distance from `r cName` by giving equal weighta
 
 ```{r SimilarPlayer1.4.3Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
+
+##### Same team alternatives
+
+Finding the players at the least distance from `r cName` by giving equal weightage to player and team distance. I feel that both these factors should be considered somehow.
+
+```{r SimilarPlayer1.4.4, ref.label = 'SimilarPlayer0.4.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```
+
+```{r SimilarPlayer1.4.4Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```
+
+The points are quite spread out on teamDistance despite the individual player distance hovering mostly around a consistent mark. This may indiciate Spurs employing a wide variety of strategies where the role of the RCB was mostly consistent.
+
+Quite a few points in the area similar to what we've observed in the earlier shortlists, player distance ~< 20 and team distance ~< 40 so even though Davinson Sanchez doesn't show up in the closest 15 / 16 that we used for illustration purpose, he's individually still playing in a very similar role to `r cName`. With these numbers, he may still show up in shortlists for some of the other matches.
 
 #### Not Shortlist
 
@@ -261,12 +277,20 @@ iPlayerId = viPlayerId[2]
 ```{r SimilarPlayer2.4.2Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-##### A combination of team and player distance
+##### Team and player distance combined
 
 ```{r SimilarPlayer2.4.3, ref.label = 'SimilarPlayer0.4.3', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
 ```{r SimilarPlayer2.4.3Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```
+
+##### Same team alternatives
+
+```{r SimilarPlayer2.4.4, ref.label = 'SimilarPlayer0.4.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```
+
+```{r SimilarPlayer2.4.4Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
 #### Not Shortlist
@@ -313,12 +337,20 @@ iPlayerId = viPlayerId[3]
 ```{r SimilarPlayer3.4.2Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-##### A combination of team and player distance
+##### Team and player distance combined
 
 ```{r SimilarPlayer3.4.3, ref.label = 'SimilarPlayer0.4.3', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
 ```{r SimilarPlayer3.4.3Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```
+
+##### Same team alternatives
+
+```{r SimilarPlayer3.4.4, ref.label = 'SimilarPlayer0.4.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```
+
+```{r SimilarPlayer3.4.4Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
 #### Not Shortlist
@@ -365,12 +397,20 @@ iPlayerId = viPlayerId[4]
 ```{r SimilarPlayer4.4.2Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-##### A combination of team and player distance
+##### Team and player distance combined
 
 ```{r SimilarPlayer4.4.3, ref.label = 'SimilarPlayer0.4.3', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
 ```{r SimilarPlayer4.4.3Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```
+
+##### Same team alternatives
+
+```{r SimilarPlayer4.4.4, ref.label = 'SimilarPlayer0.4.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```
+
+```{r SimilarPlayer4.4.4Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
 #### Not Shortlist
@@ -418,12 +458,20 @@ iPlayerId = viPlayerId[5]
 ```{r SimilarPlayer5.4.2Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-##### A combination of team and player distance
+##### Team and player distance combined
 
 ```{r SimilarPlayer5.4.3, ref.label = 'SimilarPlayer0.4.3', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
 ```{r SimilarPlayer5.4.3Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```
+
+##### Same team alternatives
+
+```{r SimilarPlayer5.4.4, ref.label = 'SimilarPlayer0.4.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```
+
+```{r SimilarPlayer5.4.4Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
 #### Not Shortlist
@@ -471,12 +519,20 @@ iPlayerId = viPlayerId[6]
 ```{r SimilarPlayer6.4.2Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-##### A combination of team and player distance
+##### Team and player distance combined
 
 ```{r SimilarPlayer6.4.3, ref.label = 'SimilarPlayer0.4.3', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
 ```{r SimilarPlayer6.4.3Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```
+
+##### Same team alternatives
+
+```{r SimilarPlayer6.4.4, ref.label = 'SimilarPlayer0.4.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```
+
+```{r SimilarPlayer6.4.4Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
 #### Not Shortlist
@@ -488,15 +544,20 @@ iPlayerId = viPlayerId[6]
 ```
 
 
-
 ## Summary
 
-Emre Can - Wijnaldum, Henderson
-Ramsey - Elneny, Xhaka
+### Strengths
 
-## Further Scope
+* The strong presence of Wijnaldum and Henderson in Emre Can's shortlist, and similarly the strong presence of various Arsenal players in Aaron Ramsey's list indicate there is some underlying structure that this logic is able to pick out.
 
-Other similar spatial distance measures could be added to enrich this further, such as areas from where shots were attempted, tackles were attempted, etc. or 
+* Except for Mahrez and Mitrovic, who don't seem to have been rotated often. all the other players have a reasonable looking list of players from the same team who played in a similar role in some other matches.
 
-For goalkeepers, this could be a great way to measure their positioning ability. This distance would need to be measured in situations where the players involved in the play or influencing it in some way are placed similarly.
+* In most cases, the shortlists drawn look like players who play in a similar manner to the player under consideration as well.
 
+* It was hard to find good matches for Mahrez primarily due to the very unusual playing strategy his team adopted. Both central midfierlders, Wilfried Ndidi and Vicente Iborra, look like they were playing in an RCM sort of position with no CM or LCM. In fact, none of his other performances were similar to his performance in this match.
+
+### Weaknesses
+
+* This model needs a player to be involved in a sufficient number of passes for the logic to have enough data to work with. This is also the reason I excluded goalkeepers from the cases I looked at.
+
+* Without giving benefit of doubt that the logic was picking out something that is contrary to expectation but still correct, there is definitely more resilience to noise needed given occasional oddities such as Kevin De Bruyne pairing with Kyle Walker, Shinji Okazaki pairing with Riyad Mahrez, etc. Given the low occurrence levels, I expect this to not be a problem when aggregating this across multiple matches.
