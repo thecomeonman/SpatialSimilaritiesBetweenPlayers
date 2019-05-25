@@ -587,7 +587,7 @@ iPlayerId = viPlayerId[6]
 
 While the base usage remains to identify players in similar roles, this concept of pairing players allows the formation of a baseline against which players could be compared. For instance, you'd expect different pass completion percents from players playing in different parts of the pitch but a comparison of a player only with other players that they have been paired with is a more reasonable and useful comparison.
 
-You could also simulate your own players. If you wanted an LCB who plays similar to how Toby Alderweireld plays, you could just make mirror images of his passes across the left and the right half of the pitch and find matches for this new set of passes. You could go a step further and create your own player by creating your own data of the sort of passes you expect a player to be making and then look for such a player.
+You could also simulate your own players. If you wanted an LCB who plays similar to how Toby Alderweireld plays, you could just make mirror images of his passes across the left and the right half of the pitch and find matches for this new set of passes. You could go a step further and create your own player by creating your own data of the sort of passes you expect a player to be making and then look for such a player in the database.
 
 
 
