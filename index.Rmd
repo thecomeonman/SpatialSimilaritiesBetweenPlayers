@@ -142,7 +142,7 @@ Note how the game against WBA as a very different set of points where passes wer
 
 ### Additional notes
 
-* Passing data is probably more reflective of attacking similarity than defensive similarity.
+* Passing data is probably more reflective of attacking similarity than defensive similarity. Like how I simplified attacking play to moving the ball from one area of the pitch to another, we could consider defense being about not letting the ball move into some area of the pitch. That would need off the ball positioning data which I don't have access to.
 
 * For more role specific distances, the distance measure can be extended to any other spatial distribution as well, eg. locations where the player shoots from, where the player tackles, etc. While defensive actions get ignored, my hope is that offensive actions indirectly still get captured, for instance if you expect to see a player shoot from certain positions, you may have less passes from the same position for him and that should cause the distance to increase between him and another player who tends to pass from that same position.
 
