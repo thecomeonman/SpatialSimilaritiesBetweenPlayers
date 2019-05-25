@@ -225,7 +225,7 @@ Regardless of player distance, teams in specific matches who had some of smalles
 
 ##### Team and player distance combined
 
-Finding the players at the least distance from `r cName` by giving equal weightage to player and team distance. I feel that both these factors should be considered somehow.
+Finding the players at the least distance from `r cName` by giving equal weightage to player and team distance. This is my preferred way of looking at things because a player in a similar role playing for a team playing in a similar way is a better pairing than either of those two conditions separately.
 
 ```{r SimilarPlayer1.4.3, ref.label = 'SimilarPlayer0.4.3', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
