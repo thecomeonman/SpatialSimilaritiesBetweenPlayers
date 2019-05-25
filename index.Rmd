@@ -16,7 +16,7 @@ library(ggplot2)
 library(scales)
 library(knitr)
 library(clue)
-theme_set(theme_bw(12))
+theme_set(theme_bw(8))
 
 ```
 
@@ -114,7 +114,7 @@ Using the player comparison metric, compare all eleven players of a team in one 
 
 Here are all the 11 X 11 distances with the final pairs highlighted for some comparisons to give you an idea of how this works.
 
-```{r PairingExamplesHomogenous, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 45, results = 'asis'}
+```{r PairingExamplesHomogenous, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 25, results = 'asis'}
 ```
 
 The sum or average of these eleven distances or is a measure of how similarly the two teams passed which can be assumed to be a proxy for how similar the two teams' playing strategy was. The smaller the sum of distances, the closer the formations of the two teams. Instead of the average distance, the maximum distance amongst these eleven distances is a stricter measure which can be used for the same purpose and this is what I prefer.
@@ -135,7 +135,7 @@ It is a measure of the amount of change needed to transform one distribution to 
 
 Here is an example from the dataset. Three distributions of points on the pitch, and the EMD between them are shown below. These three distributions are of locations from where `r dtPlayers[playerId == viPlayerId[1], name[1]]` made passes against these teams.
 
-```{r EMDExample, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+```{r EMDExample, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 6, results = 'asis'}
 ```
 
 Note how the game against WBA as a very different set of points where passes were made from, and accordingly the distance between that game and the other two games is much higher than the distance between the other two games.
@@ -165,7 +165,7 @@ I've looked at Toby Alderweireld's case in some detail to explain some aspects o
 iPlayerId = viPlayerId[1]
 ```
 
-```{r SimilarPlayer1.2, ref.label = 'SimilarPlayer0.2', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 15, results = 'asis'}
+```{r SimilarPlayer1.2, ref.label = 'SimilarPlayer0.2', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 ### `r cName` {.tabset .tabset-fade .tabset-pills}
@@ -179,7 +179,7 @@ He looks to have played in an RCB position of a 4-2-3-1.
 
 His similarity with other players who match his distributions, and the overall simimlarity of the team look as below -
 
-```{r SimilarPlayer1.4, ref.label = 'SimilarPlayer0.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer1.4, ref.label = 'SimilarPlayer0.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 6, fig.height = 6, results = 'asis'}
 ```
 
 Points towards the bottom indicate that the respective player had similar spatial distributions of the four distributions mentioned in the Methodology section to that of `r cName` in this match. Points towards the left, similarly, indicate that the player with the farthest distance with his paired player was also small which indicates that the team played very similarly overall to how `r dtThisMatch[, paste0( teamName[Team == T] )]` played in this match.
@@ -190,10 +190,10 @@ Points towards the bottom indicate that the respective player had similar spatia
 
 Regardless of team distance, players who had some of smallest individual distances from `r cName`.
 
-```{r SimilarPlayer1.4.1, ref.label = 'SimilarPlayer0.4.1', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer1.4.1, ref.label = 'SimilarPlayer0.4.1', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
-```{r SimilarPlayer1.4.1Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer1.4.1Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 Chart 1 - 
@@ -217,30 +217,30 @@ The breakdown of the individual distances for each point can be seen in these ch
 Regardless of player distance, teams in specific matches who had some of smallest distance. The player that pairs with `r cName` in those matches is the shortlisted player.
 
 
-```{r SimilarPlayer1.4.2, ref.label = 'SimilarPlayer0.4.2', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer1.4.2, ref.label = 'SimilarPlayer0.4.2', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
-```{r SimilarPlayer1.4.2Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer1.4.2Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 ##### Team and player distance combined
 
 Finding the players at the least distance from `r cName` by giving equal weightage to player and team distance. This is my preferred way of looking at things because a player in a similar role playing for a team playing in a similar way is a better pairing than either of those two conditions separately.
 
-```{r SimilarPlayer1.4.3, ref.label = 'SimilarPlayer0.4.3', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer1.4.3, ref.label = 'SimilarPlayer0.4.3', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
-```{r SimilarPlayer1.4.3Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer1.4.3Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 ##### Same team alternatives
 
 For sake of curiosity and validation, a look at other players from the same team who matched with `r cName` in some other matches.
 
-```{r SimilarPlayer1.4.4, ref.label = 'SimilarPlayer0.4.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 6, results = 'asis'}
+```{r SimilarPlayer1.4.4, ref.label = 'SimilarPlayer0.4.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 4, results = 'asis'}
 ```
 
-```{r SimilarPlayer1.4.4Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 6, results = 'asis'}
+```{r SimilarPlayer1.4.4Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 4, results = 'asis'}
 ```
 
 The points are quite spread out on teamDistance despite the individual player distance hovering mostly around a consistent mark. The player himelf didn't maange to make the shortlist for the two shortlisting criteria which included team distance. This may indiciate Spurs employing a wide variety of strategies where the role of the RCB was mostly consistent.
@@ -251,10 +251,10 @@ Quite a few points are in the area similar to what we've observed in the earlier
 
 Some players who played in the same position as `r cName` in this match, RCB, in at least one match but didn't played very similarly to him in those matches. These are players that should probably be avoided. I've included `r cName`'s performance as a reference.
 
-```{r SimilarPlayer1.5, ref.label = 'SimilarPlayer0.5', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer1.5, ref.label = 'SimilarPlayer0.5', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
-```{r SimilarPlayer1.5Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer1.5Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 
@@ -272,7 +272,7 @@ iPlayerId = viPlayerId[2]
 ```{r SimilarPlayer2.3, ref.label = 'SimilarPlayer0.3', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 15, results = 'asis'}
 ```
 
-```{r SimilarPlayer2.4, ref.label = 'SimilarPlayer0.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer2.4, ref.label = 'SimilarPlayer0.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 6, fig.height = 6, results = 'asis'}
 ```
 
 #### Shortlist {.tabset .tabset-fade .tabset-pills}
@@ -282,7 +282,7 @@ iPlayerId = viPlayerId[2]
 ```{r SimilarPlayer2.4.1, ref.label = 'SimilarPlayer0.4.1', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-```{r SimilarPlayer2.4.1Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer2.4.1Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 ##### Only team distance
@@ -290,7 +290,7 @@ iPlayerId = viPlayerId[2]
 ```{r SimilarPlayer2.4.2, ref.label = 'SimilarPlayer0.4.2', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-```{r SimilarPlayer2.4.2Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer2.4.2Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 ##### Team and player distance combined
@@ -298,7 +298,7 @@ iPlayerId = viPlayerId[2]
 ```{r SimilarPlayer2.4.3, ref.label = 'SimilarPlayer0.4.3', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-```{r SimilarPlayer2.4.3Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer2.4.3Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 ##### Same team alternatives
@@ -306,7 +306,7 @@ iPlayerId = viPlayerId[2]
 ```{r SimilarPlayer2.4.4, ref.label = 'SimilarPlayer0.4.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 6, results = 'asis'}
 ```
 
-```{r SimilarPlayer2.4.4Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 6, results = 'asis'}
+```{r SimilarPlayer2.4.4Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 4, results = 'asis'}
 ```
 
 #### Not Shortlist
@@ -314,7 +314,7 @@ iPlayerId = viPlayerId[2]
 ```{r SimilarPlayer2.5, ref.label = 'SimilarPlayer0.5', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-```{r SimilarPlayer2.5Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer2.5Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 
@@ -332,7 +332,7 @@ iPlayerId = viPlayerId[3]
 ```{r SimilarPlayer3.3, ref.label = 'SimilarPlayer0.3', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 15, results = 'asis'}
 ```
 
-```{r SimilarPlayer3.4, ref.label = 'SimilarPlayer0.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer3.4, ref.label = 'SimilarPlayer0.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 6, fig.height = 6, results = 'asis'}
 ```
 
 #### Shortlist {.tabset .tabset-fade .tabset-pills}
@@ -342,7 +342,7 @@ iPlayerId = viPlayerId[3]
 ```{r SimilarPlayer3.4.1, ref.label = 'SimilarPlayer0.4.1', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-```{r SimilarPlayer3.4.1Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer3.4.1Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 ##### Only team distance
@@ -350,7 +350,7 @@ iPlayerId = viPlayerId[3]
 ```{r SimilarPlayer3.4.2, ref.label = 'SimilarPlayer0.4.2', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-```{r SimilarPlayer3.4.2Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer3.4.2Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 ##### Team and player distance combined
@@ -358,7 +358,7 @@ iPlayerId = viPlayerId[3]
 ```{r SimilarPlayer3.4.3, ref.label = 'SimilarPlayer0.4.3', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-```{r SimilarPlayer3.4.3Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer3.4.3Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 ##### Same team alternatives
@@ -374,7 +374,7 @@ iPlayerId = viPlayerId[3]
 ```{r SimilarPlayer3.5, ref.label = 'SimilarPlayer0.5', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-```{r SimilarPlayer3.5Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer3.5Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 
@@ -392,7 +392,7 @@ iPlayerId = viPlayerId[4]
 ```{r SimilarPlayer4.3, ref.label = 'SimilarPlayer0.3', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 15, results = 'asis'}
 ```
 
-```{r SimilarPlayer4.4, ref.label = 'SimilarPlayer0.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer4.4, ref.label = 'SimilarPlayer0.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 6, fig.height = 6, results = 'asis'}
 ```
 
 #### Shortlist {.tabset .tabset-fade .tabset-pills}
@@ -402,7 +402,7 @@ iPlayerId = viPlayerId[4]
 ```{r SimilarPlayer4.4.1, ref.label = 'SimilarPlayer0.4.1', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-```{r SimilarPlayer4.4.1Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer4.4.1Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 ##### Only team distance
@@ -410,7 +410,7 @@ iPlayerId = viPlayerId[4]
 ```{r SimilarPlayer4.4.2, ref.label = 'SimilarPlayer0.4.2', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-```{r SimilarPlayer4.4.2Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer4.4.2Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 ##### Team and player distance combined
@@ -418,7 +418,7 @@ iPlayerId = viPlayerId[4]
 ```{r SimilarPlayer4.4.3, ref.label = 'SimilarPlayer0.4.3', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-```{r SimilarPlayer4.4.3Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer4.4.3Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 ##### Same team alternatives
@@ -426,7 +426,7 @@ iPlayerId = viPlayerId[4]
 ```{r SimilarPlayer4.4.4, ref.label = 'SimilarPlayer0.4.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-```{r SimilarPlayer4.4.4Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer4.4.4Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 6, results = 'asis'}
 ```
 
 #### Not Shortlist
@@ -434,7 +434,7 @@ iPlayerId = viPlayerId[4]
 ```{r SimilarPlayer4.5, ref.label = 'SimilarPlayer0.5', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-```{r SimilarPlayer4.5Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer4.5Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 
@@ -453,7 +453,7 @@ iPlayerId = viPlayerId[5]
 ```{r SimilarPlayer5.3, ref.label = 'SimilarPlayer0.3', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 15, results = 'asis'}
 ```
 
-```{r SimilarPlayer5.4, ref.label = 'SimilarPlayer0.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer5.4, ref.label = 'SimilarPlayer0.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 6, fig.height = 6, results = 'asis'}
 ```
 
 #### Shortlist {.tabset .tabset-fade .tabset-pills}
@@ -463,7 +463,7 @@ iPlayerId = viPlayerId[5]
 ```{r SimilarPlayer5.4.1, ref.label = 'SimilarPlayer0.4.1', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-```{r SimilarPlayer5.4.1Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer5.4.1Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 ##### Only team distance
@@ -471,7 +471,7 @@ iPlayerId = viPlayerId[5]
 ```{r SimilarPlayer5.4.2, ref.label = 'SimilarPlayer0.4.2', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-```{r SimilarPlayer5.4.2Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer5.4.2Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 ##### Team and player distance combined
@@ -479,7 +479,7 @@ iPlayerId = viPlayerId[5]
 ```{r SimilarPlayer5.4.3, ref.label = 'SimilarPlayer0.4.3', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-```{r SimilarPlayer5.4.3Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer5.4.3Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 ##### Same team alternatives
@@ -487,7 +487,7 @@ iPlayerId = viPlayerId[5]
 ```{r SimilarPlayer5.4.4, ref.label = 'SimilarPlayer0.4.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 9, results = 'asis'}
 ```
 
-```{r SimilarPlayer5.4.4Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 9, results = 'asis'}
+```{r SimilarPlayer5.4.4Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 6, results = 'asis'}
 ```
 
 #### Not Shortlist
@@ -495,7 +495,7 @@ iPlayerId = viPlayerId[5]
 ```{r SimilarPlayer5.5, ref.label = 'SimilarPlayer0.5', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-```{r SimilarPlayer5.5Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer5.5Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 
@@ -514,7 +514,7 @@ iPlayerId = viPlayerId[6]
 ```{r SimilarPlayer6.3, ref.label = 'SimilarPlayer0.3', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 15, results = 'asis'}
 ```
 
-```{r SimilarPlayer6.4, ref.label = 'SimilarPlayer0.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer6.4, ref.label = 'SimilarPlayer0.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 6, fig.height = 6, results = 'asis'}
 ```
 
 #### Shortlist {.tabset .tabset-fade .tabset-pills}
@@ -524,7 +524,7 @@ iPlayerId = viPlayerId[6]
 ```{r SimilarPlayer6.4.1, ref.label = 'SimilarPlayer0.4.1', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-```{r SimilarPlayer6.4.1Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer6.4.1Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 ##### Only team distance
@@ -532,7 +532,7 @@ iPlayerId = viPlayerId[6]
 ```{r SimilarPlayer6.4.2, ref.label = 'SimilarPlayer0.4.2', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-```{r SimilarPlayer6.4.2Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer6.4.2Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 ##### Team and player distance combined
@@ -540,7 +540,7 @@ iPlayerId = viPlayerId[6]
 ```{r SimilarPlayer6.4.3, ref.label = 'SimilarPlayer0.4.3', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-```{r SimilarPlayer6.4.3Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer6.4.3Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 ##### Same team alternatives
@@ -548,7 +548,7 @@ iPlayerId = viPlayerId[6]
 ```{r SimilarPlayer6.4.4, ref.label = 'SimilarPlayer0.4.4', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 9, results = 'asis'}
 ```
 
-```{r SimilarPlayer6.4.4Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 9, results = 'asis'}
+```{r SimilarPlayer6.4.4Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 6, results = 'asis'}
 ```
 
 #### Not Shortlist
@@ -556,7 +556,7 @@ iPlayerId = viPlayerId[6]
 ```{r SimilarPlayer6.5, ref.label = 'SimilarPlayer0.5', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
 ```
 
-```{r SimilarPlayer6.5Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 12, results = 'asis'}
+```{r SimilarPlayer6.5Plot, ref.label = 'SimilarPlayer0.4Plot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 8, results = 'asis'}
 ```
 
 ## Quality of results
