@@ -65,6 +65,10 @@ Brief partial description <a href="https://thecomeonman.github.io/SpatialSimilar
 
 Once I have the pairings and the distance, as described in the above link, I prepare an adjacency matrix between each player in each match to be used in a hierarchical clustering algorithm. In cases where the player-match were paired, I set the distance in the adjacency matrix to what it was calculated as. In cases where the player-match were not paired, I set the distance to an artifically very high number. By considering the distance only when players were paired we will avoid clustering players with similar distributions but different roles within context of their team, for eg. a forward playing in a park-the-bus sort of situation and a central midfielder from another game may have very similar distributions but they shouldn't be placed in one cluster because their roles within the context of their teams are different. 
 
+Each data point passed to the clustering is a player's performance in a match. The same player's performance in different matches can be assigned to a different cluster which means you might see the same player in multiple clusters.
+
+The data I used is also a sample of the data mentioned in the above link, about 1400 instances of a team playing more than 60 minutes with the same formation and the same 11 players.
+
 ## Clusters
 
 ```{r ClusteringPlayersOverallExploration, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
@@ -72,9 +76,11 @@ Once I have the pairings and the distance, as described in the above link, I pre
 
 Looking at the players, the cluster groups roughly correspond to the following positions - `r dtPositionClusterGroup[, paste(paste0(ClusterGroup, ' - ', Position), collapse = ', ')]`.
 
-I further broke down each cluster group into smaller clusters, such that each cluster group, except for the GK one, had at least two clusters in it. Two because that might at least pick out players in roles which more attacking or more defensive although there is no guarantee that that's how the two clusters would split the cluster group they belong to. Given that the clustering is hierarchical, we can continue to break the clusters down even more and get more and more granular definitions.
+I further broke down each cluster group into smaller clusters, such that each outfield cluster group had at least two clusters in it. Two because that might at least pick out players in roles which more attacking or more defensive although there is no guarantee that that's how the two clusters would split the cluster group they belong to. 
 
-## Cluster Group Differences {.tabset .tabset-fade .tabset-pills}
+Given that the clustering is hierarchical, we can continue to break the clusters down even more and get more and more granular definitions. I've demonstrated this for one cluster group in the Finer Clustering section.
+
+## Cluster Groups amd Clusters {.tabset .tabset-fade .tabset-pills}
 
 These charts highlight the differences in the distributions of the cluster group and the clusters in that cluster group. I have explained how to interpret these charts in the RW cluster group.
 
@@ -211,7 +217,7 @@ The comparison chart has the same heatmap as the overview chart but has circles 
 
 If you were to now look at the charts -
 
-This cluster group is right wingers, divided into two clusters, cluster 2 is a more attacking cluster and cluster 21 is a more defensive cluster.
+This cluster group is right wingers, divided into two clusters, cluster 2 is a more attacking cluster with greater involvement in the centre of the pitch, and cluster 21 is a more defensive cluster.
 
 
 ```{r child = '/tmp/ClusterGroup3.Rmd'}
@@ -219,7 +225,7 @@ This cluster group is right wingers, divided into two clusters, cluster 2 is a m
 
 This cluster group is players on defensive duty. Things of interest -
 
-* Cluster 3 might be the central defender of the 3 at the back, or the more forward foraying centre back. The algorithm thinks this player is more similar to midfielders than other centre backs interestingly.
+* Cluster 3 might be the central defender of the 3 at the back, or the more forward foraying centre back. There are more passes to the sides of the pitch in the defensive half than forward. The algorithm thinks this player is more similar to midfielders than other centre backs interestingly.
 
 * Cluster 7 and 16 are probably the right and left sided CDMs.
 
@@ -229,7 +235,7 @@ This cluster group is players on defensive duty. Things of interest -
 
 This cluster group has mostly left wingers. Things of interest -
 
-* Cluster 4 is more involved in the centre of the pitch that cluster 6 which tends to stick to the wing
+* Cluster 4 is more involved in the centre of the pitch than cluster 6 which tends to stick to the wing
 
 * Cluster 20 might be a CAM sort of a role with a left sided bias.
 
@@ -243,8 +249,6 @@ This group is primarily forwards, center or wide, with the odd attacking midfiel
 
 * Cluster 15 tends to play higher up the pitch, but with a bias to the right of the pitch compared to the overall cluster group. Interestingly, there is no cluster which is a complement of this cluster with a bias to the left.
 
-* Cluster 5 has a bias towards deeper in the pitch. There is a higher occurrence of receiving passes from the deep so I'd speculate that these are forwards trying to win long balls.
-
 * Cluster 18 looks like a mix of attacking midfielders, forwards who play behind the centre forward, etc.
 
 * Cluster 25 plays higher up the pitch but not as high as cluster 15. There is a slight bias to the left of the pitch. Unlike their own passing and receiving postions, they seem to receive a slightly higher share of the passes from players playing deeper in the pitch. Like cluster 15, there is no corresponding cluster with a bias to the right.
@@ -257,7 +261,11 @@ This cluster group has mostly LCBs. Clusters 8 and 23 probably correspond to the
 ```{r child = '/tmp/ClusterGroup7.Rmd'}
 ```
 
-This cluster group has mostly right sided midfielders. Cluster 9 is slightly more central and defensive, and probably the RCM of teams playing with two central midfielders. cluster 13 is wider and more attacking, probably the RCM of teams playing with three midfielders.
+This cluster group has mostly right sided midfielders. 
+
+* Cluster 9 is slightly more central and defensive, and probably the RCM of teams playing with two central midfielders. 
+
+* cluster 13 is wider and more attacking, probably the RCM of teams playing with three midfielders.
 
 ```{r child = '/tmp/ClusterGroup8.Rmd'}
 ```
@@ -272,7 +280,11 @@ This cluster group has mostly RCBs. Clusters 11 and 19 probably correspond to th
 ```{r child = '/tmp/ClusterGroup10.Rmd'}
 ```
 
-This cluster group has mostly left sided midfielders. cluster 12 is wider and more attacking, probably the LCM of teams playing with three midfielders. Cluster 22 is slightly more central and defensive, and probably the LCM of teams playing with two central midfielders.
+This cluster group has mostly left sided midfielders. 
+
+* Cluster 12 is wider and more attacking, probably the LCM of teams playing with three midfielders. 
+
+* Cluster 22 is slightly more central and defensive, and probably the LCM of teams playing with two central midfielders.
 
 ```{r child = '/tmp/ClusterGroup11.Rmd'}
 ```
@@ -293,23 +305,23 @@ fPrepareClusterGroupRMD(2)
 ```{r child = '/tmp/ClusterGroup2.Rmd'}
 ```
 
-* Cluster 2 is a more free roaming sort of role with plenty of activity towards the left of the pitch as well compared to the cluster group.
+* Cluster 2 is a more free roaming sort of role with plenty of activity towards the left of the pitch as well compared to the cluster group. The skew isn't as strong in where they receive the ball from, but is quite strong in all the other three distributions.
 
-* Cluster 23 is a deeper, more central sort of role with a higher proportion of touches behind the centre line compared to the cluster group.
+* Cluster 23 is a deeper, more central sort of role with a higher proportion of all four activities behind the centre line compared to the cluster group.
 
-* Cluster 28 is a role of a player pushed higher up and towards the corner.
+* Cluster 28 is a role of a player pushed higher up and towards the corner in terms of receiving and passing the ball both. The higher number of passes to inside the box might be crosses.
 
 * Cluster 41 is a role which roams even more than cluster 2, given the relatively higher activity towards the centre and left of the pitch.
 
-* Cluster 56 is similar to cluster 23, with a lot of activity earlier in the pitch, but players in this role tend to stay closer to the touchline compared to what we saw with cluster 23.
+* Cluster 56 is similar to cluster 23, with a lot of activity earlier in the pitch, but players in this role behave more like wingers and tend to stay closer to the touchline compared to what we saw with cluster 23.
 
-* Cluster 61 is similar to but even more defensive than cluster 23.
+* Cluster 61 is involved lesser in the areas towards the right edge, in the attacking half of the pitch compared to the cluster group. This difference is spread over various other parts of the pitch. These players are also roaming but their roaming covers offensive and defensive areas both.
 
-* Cluster 83 is not deployed as far wide as the other clusters. The bump in passes received from various spots deeper in the pitch is interesting.
+* Cluster 83 is not deployed as far wide as the other clusters. The bump in passes received from various spots deeper in the pitch is an interesting note to this cluster.
 
 * Cluster 86 is probably the stereotypical right winger, with lots of activity on the touchline and in the attacking half.
 
-* Cluster 92 looks like wingbacks, given how their activity is well spread across the wing and not as concentrated in certain areas as what the other clusters showed.
+* Cluster 92 looks like wingbacks, given how their activity is well spread across the wing and not as concentrated in certain parts of the wing as what the other clusters showed.
 
 ## Get in touch
 
