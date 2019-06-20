@@ -1,0 +1,316 @@
+---
+title: "Defining Player Roles Through Spatial Similarities."
+author: "Aditya Kothari"
+date: "May 2019"
+output: html_document
+---
+
+```{r Setup, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+   
+rm(list = ls())
+
+library(data.table)
+library(emdist)
+library(snow)
+library(snowfall)
+library(ggplot2)
+library(scales)
+library(knitr)
+library(clue)
+library(dendextend)
+theme_set(theme_bw(12))
+
+knitr::knit_meta(class=NULL, clean = TRUE)
+options(knitr.duplicate.label = 'allow')
+
+```
+
+```{r ParametersFunctions, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+
+cPostCodeFolderLocation = '/media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/'
+
+source(paste0(cPostCodeFolderLocation, '/Common.R'))
+read_chunk(paste0(cPostCodeFolderLocation, '/CommonChunks.R'))
+read_chunk(paste0(cPostCodeFolderLocation, '/CommonChunksClusteringPlayersRoles.R'))
+
+iNbrClusters = 26
+iNbrClusterGroups = 11
+```
+
+
+```{r LoadingProcessedData, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+```
+
+
+```{r LoadingDistanceComparison, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+```
+
+
+```{r ClusteringDataPrepLite, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+```
+
+```{r ClusteringPlayersOverall, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+```
+
+
+# {.tabset .tabset-fade .tabset-pills}
+
+## Motivation
+
+In this post, I try to derive the sort of player roles actually demonstrated in play.
+
+## Methodology
+
+Brief partial description <a href="https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/Index.html">here.</a>
+
+Once I have the pairings and the distance, as described in the above link, I prepare an adjacency matrix between each player in each match to be used in a hierarchical clustering algorithm. In cases where the player-match were paired, I set the distance in the adjacency matrix to what it was calculated as. In cases where the player-match were not paired, I set the distance to an artifically very high number. By considering the distance only when players were paired we will avoid clustering players with similar distributions but different roles within context of their team, for eg. a forward playing in a park-the-bus sort of situation and a central midfielder from another game may have very similar distributions but they shouldn't be placed in one cluster because their roles within the context of their teams are different. 
+
+## Clusters
+
+```{r ClusteringPlayersOverallExploration, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+```
+
+Looking at the players, the cluster groups roughly correspond to the following positions - `r dtPositionClusterGroup[, paste(paste0(ClusterGroup, ' - ', Position), collapse = ', ')]`.
+
+I further broke down each cluster group into smaller clusters, such that each cluster group, except for the GK one, had at least two clusters in it. Two because that might at least pick out players in roles which more attacking or more defensive although there is no guarantee that that's how the two clusters would split the cluster group they belong to. Given that the clustering is hierarchical, we can continue to break the clusters down even more and get more and more granular definitions.
+
+## Cluster Group Differences {.tabset .tabset-fade .tabset-pills}
+
+These charts highlight the differences in the distributions of the cluster group and the clusters in that cluster group. I have explained how to interpret these charts in the RW cluster group.
+
+```{r ClusterGroupComparisonRMDGeneration, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+
+
+fPrepareClusterGroupRMD = function(
+   iClusterGroup
+) {
+   
+cOverviewString = paste0(
+
+"\n```{r ClusterGroupSet0, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, results = 'asis'}
+
+iClusterGroup = 0
+viClustersInThisGroup = dtClusters[ClusterGroup == iClusterGroup, unique(Cluster)]
+
+```\n",
+
+"### `r dtPositionClusterGroup[ClusterGroup == iClusterGroup, Position]`",
+
+"\n```{r ClusterGroupOverview0, ref.label = 'ClusterGroupOverview', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 10, results = 'asis'}
+```\n",
+
+"\n#### Clusters vs. overall cluster group {.tabset .tabset-fade .tabset-pills}\n",
+
+collapse = '\n'
+)
+
+cClusterComparisonString = paste0(
+
+"\n```{r ClusterGroupComparisonSet0.1, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, results = 'asis'}
+iCluster = viClustersInThisGroup[1]
+```\n",
+
+"\n```{r Blank0.1, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, results = 'asis'}
+qwe = 'Because kable seems to absorb what comes nextx'
+
+```\n",
+
+"\n##### Cluster `r iCluster`\n",
+
+"\n```{r ClusterGroupComparison0.1, ref.label = 'ClusterGroupComparison', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 30, results = 'asis'}
+```\n",
+
+collapse = '\n'
+)
+
+   cTempFileName = paste0(
+      '/tmp/ClusterGroup',
+      iClusterGroup,
+      '.Rmd'
+   )
+   
+   if ( file.exists(cTempFileName) ) {
+      file.remove(cTempFileName)
+   }
+   
+   
+   cat(
+       gsub(
+          x = gsub(
+              x = gsub(
+                  x = gsub(
+                     x = cOverviewString, 
+                     pattern = '`r 0`', 
+                     replacement = paste0('`r ', iClusterGroup,'`')
+                  ),
+                  pattern = 'ClusterGroupSet0', 
+                  replacement = paste0('ClusterGroupSet', iClusterGroup)
+              ),
+              pattern = 'iClusterGroup = 0', 
+              replacement = paste0('iClusterGroup = ', iClusterGroup)
+          ),
+          pattern = 'ClusterGroupOverview0', 
+          replacement = paste0('ClusterGroupOverview', iClusterGroup)
+      ), 
+      file = cTempFileName, 
+      append = T
+   )
+   
+   for ( iClusterInThisGroup in dtClusters[ClusterGroup == iClusterGroup, sort(unique(Cluster))] ) {
+      
+      cat(
+         gsub(
+            x = gsub(
+               x = gsub(
+                  x = cClusterComparisonString, 
+                  pattern = 'ClusterGroupComparisonSet0.1', 
+                  replacement = paste0('ClusterGroupComparisonSet', iClusterInThisGroup)
+               ),
+               pattern = 'ClusterGroupComparison0.1', 
+               replacement = paste0('ClusterGroupComparison', iClusterInThisGroup)
+            ),
+            pattern = 'viClustersInThisGroup\\[1\\]', 
+            replacement = iClusterInThisGroup
+         ), 
+         file = cTempFileName, 
+         append = T
+      )
+      
+   }
+   
+   cat(
+      '\n#### Cluster Descriptions\n', 
+      file = cTempFileName, 
+      append = T
+   )
+   
+}
+
+for ( iClusterGroup in dtClusters[, unique(ClusterGroup)] ) {
+   
+   fPrepareClusterGroupRMD(iClusterGroup)
+   
+}
+
+
+```
+
+
+
+```{r child = '/tmp/ClusterGroup1.Rmd'}
+```
+
+The distributions and the list of players in this cluster group looks like the goalkeepers cluster. Goalkeepers are similar enough within themselves, compared to most of the other positions, that they all fall into one cluster as per this logic.
+
+```{r child = '/tmp/ClusterGroup2.Rmd'}
+```
+
+The cluster group overview chart shows the distribution of all the instances that fell in this cluster group. As expected of a set of right wingers, there is a high proportion of passes being received at the right wing ( bottom left ) and being made from the right wing ( top right ) with the area around the right wing having a high proportion of where the player is passing to ( top left ) and receiving passes from ( bottom right. ) The text also tells the distribution in that area. The dots are a sample of passes plotted to give a quick understanding of these distributions without looking at the numbers or heatmap.
+
+The comparison chart has the same heatmap as the overview chart but has circles overlaid on it which indicate the distriution for the cluster with their size, and the differene between the proportion of passes in this area in this cluster and in this cluster group with its colour. For instance, in cluster 2's PassToXY chart, the right corner near the opposition end had 3% of this cluster's observations which was 2% lesser than the proportion for the cluster group for this same area.
+
+If you were to now look at the charts -
+
+This cluster group is right wingers, divided into two clusters, cluster 2 is a more attacking cluster and cluster 21 is a more defensive cluster.
+
+
+```{r child = '/tmp/ClusterGroup3.Rmd'}
+```
+
+This cluster group is players on defensive duty. Things of interest -
+
+* Cluster 3 might be the central defender of the 3 at the back, or the more forward foraying centre back. The algorithm thinks this player is more similar to midfielders than other centre backs interestingly.
+
+* Cluster 7 and 16 are probably the right and left sided CDMs.
+
+
+```{r child = '/tmp/ClusterGroup4.Rmd'}
+```
+
+This cluster group has mostly left wingers. Things of interest -
+
+* Cluster 4 is more involved in the centre of the pitch that cluster 6 which tends to stick to the wing
+
+* Cluster 20 might be a CAM sort of a role with a left sided bias.
+
+
+```{r child = '/tmp/ClusterGroup5.Rmd'}
+```
+
+This group is primarily forwards, center or wide, with the odd attacking midfielder. Things of interest - 
+
+* Cluster 5 and 14 have some bias towards the right and left of the pitch respectively compared to the overall cluster group.
+
+* Cluster 15 tends to play higher up the pitch, but with a bias to the right of the pitch compared to the overall cluster group. Interestingly, there is no cluster which is a complement of this cluster with a bias to the left.
+
+* Cluster 5 has a bias towards deeper in the pitch. There is a higher occurrence of receiving passes from the deep so I'd speculate that these are forwards trying to win long balls.
+
+* Cluster 18 looks like a mix of attacking midfielders, forwards who play behind the centre forward, etc.
+
+* Cluster 25 plays higher up the pitch but not as high as cluster 15. There is a slight bias to the left of the pitch. Unlike their own passing and receiving postions, they seem to receive a slightly higher share of the passes from players playing deeper in the pitch. Like cluster 15, there is no corresponding cluster with a bias to the right.
+
+```{r child = '/tmp/ClusterGroup6.Rmd'}
+```
+
+This cluster group has mostly LCBs. Clusters 8 and 23 probably correspond to the left of a three man defense, and the the left of a two man defense respectively.
+
+```{r child = '/tmp/ClusterGroup7.Rmd'}
+```
+
+This cluster group has mostly right sided midfielders. Cluster 9 is slightly more central and defensive, and probably the RCM of teams playing with two central midfielders. cluster 13 is wider and more attacking, probably the RCM of teams playing with three midfielders.
+
+```{r child = '/tmp/ClusterGroup8.Rmd'}
+```
+
+This cluster group has mostly RBs. Clusters 10 and 25 probably correspond to more advanced RBs and more defensive RBs respectively.
+
+```{r child = '/tmp/ClusterGroup9.Rmd'}
+```
+
+This cluster group has mostly RCBs. Clusters 11 and 19 probably correspond to the right of a two man defense and right of a three man defense respectively.
+
+```{r child = '/tmp/ClusterGroup10.Rmd'}
+```
+
+This cluster group has mostly left sided midfielders. cluster 12 is wider and more attacking, probably the LCM of teams playing with three midfielders. Cluster 22 is slightly more central and defensive, and probably the LCM of teams playing with two central midfielders.
+
+```{r child = '/tmp/ClusterGroup11.Rmd'}
+```
+
+This cluster group has mostly LBs. Clusters 17 and 26 probably correspond to more advanced LBs and more defensive LBs respectively.
+
+## Finer Clustering
+
+As an example of what more granular cluster would look like, I pick the right wing cluster group and break it down into a greater number of clusters. The same exercise could be repeated with any other cluster group, and any number of clusters.
+
+```{r FinerClustering, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 15, results = 'asis'}
+dtClusters = dtClusters[order(Order)]
+dtClusters[, Cluster := cutree(hcModel, k = 100)]
+dtClusterPlayerExamples = fClusterPlayerExamples(dtClusters)
+fPrepareClusterGroupRMD(2)
+```
+
+```{r child = '/tmp/ClusterGroup2.Rmd'}
+```
+
+* Cluster 2 is a more free roaming sort of role with plenty of activity towards the left of the pitch as well compared to the cluster group.
+
+* Cluster 23 is a deeper, more central sort of role with a higher proportion of touches behind the centre line compared to the cluster group.
+
+* Cluster 28 is a role of a player pushed higher up and towards the corner.
+
+* Cluster 41 is a role which roams even more than cluster 2, given the relatively higher activity towards the centre and left of the pitch.
+
+* Cluster 56 is similar to cluster 23, with a lot of activity earlier in the pitch, but players in this role tend to stay closer to the touchline compared to what we saw with cluster 23.
+
+* Cluster 61 is similar to but even more defensive than cluster 23.
+
+* Cluster 83 is not deployed as far wide as the other clusters. The bump in passes received from various spots deeper in the pitch is interesting.
+
+* Cluster 86 is probably the stereotypical right winger, with lots of activity on the touchline and in the attacking half.
+
+* Cluster 92 looks like wingbacks, given how their activity is well spread across the wing and not as concentrated in certain areas as what the other clusters showed.
+
+## Get in touch
+
+Do you have suggestions, comments, new ideas to build on top of this, etc.? I'd love to hear. Find me on Twitter - @thecomeonman.
