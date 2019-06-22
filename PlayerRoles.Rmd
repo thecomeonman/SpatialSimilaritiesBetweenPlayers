@@ -1,11 +1,11 @@
 ---
-title: "Defining Player Roles Through Spatial Similarities."
+title: "Defining Player Roles Through Spatial Similarities"
 author: "Aditya Kothari"
 date: "May 2019"
 output: html_document
 ---
 
-```{r Setup, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+```{r Setup, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'hide'}
    
 rm(list = ls())
 
@@ -25,7 +25,7 @@ options(knitr.duplicate.label = 'allow')
 
 ```
 
-```{r ParametersFunctions, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+```{r ParametersFunctions, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'hide'}
 
 cPostCodeFolderLocation = '/media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/'
 
@@ -270,7 +270,7 @@ This cluster group has mostly right sided midfielders.
 ```{r child = '/tmp/ClusterGroup8.Rmd'}
 ```
 
-This cluster group has mostly RBs. Clusters 10 and 25 probably correspond to more advanced RBs and more defensive RBs respectively.
+This cluster group has mostly RBs. Clusters 10 and 24 probably correspond to more advanced RBs and more defensive RBs respectively.
 
 ```{r child = '/tmp/ClusterGroup9.Rmd'}
 ```

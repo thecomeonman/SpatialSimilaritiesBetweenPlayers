@@ -1,0 +1,160 @@
+---
+title: "Understanding Team Strategy Through Spatial Similarities."
+author: "Aditya Kothari"
+date: "May 2019"
+output: html_document
+---
+
+```{r Setup, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'hide'}
+   
+rm(list = ls())
+
+library(data.table)
+library(emdist)
+library(snow)
+library(snowfall)
+library(ggplot2)
+library(scales)
+library(knitr)
+library(clue)
+library(dendextend)
+theme_set(theme_bw(12))
+
+knitr::knit_meta(class=NULL, clean = TRUE)
+options(knitr.duplicate.label = 'allow')
+
+```
+
+```{r ParametersFunctions, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'hide'}
+
+cPostCodeFolderLocation = '/media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/'
+
+source(paste0(cPostCodeFolderLocation, '/Common.R'))
+read_chunk(paste0(cPostCodeFolderLocation, '/CommonChunks.R'))
+read_chunk(paste0(cPostCodeFolderLocation, '/CommonChunksClusteringPlayersRoles.R'))
+read_chunk(paste0(cPostCodeFolderLocation, '/CommonChunksClusteringTeamStrategies.R'))
+
+iNbrClusters = 26
+iNbrClusterGroups = 11
+
+
+vcTeamNames = c(
+   'Arsenal',
+   'Chelsea',
+   'Liverpool',
+   'Man City',
+   'Man Utd',
+   'Tottenham',
+   
+   'Bayern',
+   'Borussia Dortmund',
+   
+   'PSG',
+   'Monaco',
+   
+   'Atletico',
+   'Barcelona',
+   'Real Madrid',
+   
+   'Juventus',
+   'Napoli'
+)
+
+```
+
+# {.tabset .tabset-fade .tabset-pills}
+
+## Motivation
+
+
+```{r LoadingProcessedData, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+```
+
+```{r ClusteringPlayersOverall, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+```
+
+```{r PctPositionData, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+```
+
+
+## Teams {.tabset .tabset-fade .tabset-pills}
+
+
+
+```{r TeamAssignment1, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+iTeamIndex = 1
+```
+
+```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
+```
+
+```{r TeamAssignment2, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+iTeamIndex = 2
+```
+
+```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
+```
+
+
+```{r TeamAssignment3, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+iTeamIndex = 3
+```
+
+```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
+```
+
+
+```{r TeamAssignment4, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+iTeamIndex = 4
+```
+
+```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
+```
+
+
+
+```{r TeamAssignment5, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+iTeamIndex = 5
+```
+
+```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
+```
+
+
+```{r TeamAssignment6, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+iTeamIndex = 6
+```
+
+```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
+```
+
+```{r TeamAssignment7, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+iTeamIndex = 7
+```
+
+```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
+```
+
+
+```{r TeamAssignment8, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+iTeamIndex = 8
+```
+
+```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
+```
+
+
+```{r TeamAssignment9, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+iTeamIndex = 9
+```
+
+```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
+```
+
+
+```{r TeamAssignment10, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+iTeamIndex = 10
+```
+
+```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
+```
