@@ -1,0 +1,527 @@
+---
+title: "Similar Passing Style to Virgil Van Dijk"
+author: "Aditya Kothari"
+date: "4 July 2019"
+output: html_document
+---
+
+```{r Setup, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+   
+rm(list = ls())
+
+library(data.table)
+library(emdist)
+library(snow)
+library(snowfall)
+library(ggplot2)
+library(scales)
+library(knitr)
+library(clue)
+theme_set(theme_bw(12))
+
+```
+
+```{r ParametersFunctions, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+
+cPostCodeFolderLocation = '/media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/'
+cPostDataFolderLocation = '/media/ask/Data/Personal/Projects/Personal/NoSuchThingAs4231'
+
+source(paste0(cPostCodeFolderLocation, '/Common.R'))
+read_chunk(paste0(cPostCodeFolderLocation, '/CommonChunksSimilarPlayers.R'))
+
+```
+
+```{r DataLoading, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+
+load(paste0(
+   cPostDataFolderLocation,
+   '/Data/FormationMatchingData/ProcessedData.Rdata'
+))
+
+iPlayerId = dtPlayers[name == 'Virgil van Dijk', playerId[1]]
+iTeamId = dtMatches[teamName == 'Liverpool', teamId[1]]
+
+# rm(dtPasses)
+# dtSNOMapping = dtPasses[, list(SNO = SNO[1]), list(matchId = matchId, teamId = teamId)]
+# rm(dtPasses)
+# rm(dtPlayers)
+# rm(dtFormationDetails)
+# rm(dtFormationSets)
+
+
+load(
+   paste0(
+      cPostDataFolderLocation,
+      '/Data/FormationMatchingData/DistanceFileNames.Rdata'
+   )
+)
+
+dtDistanceSummary = rbindlist(
+   lapply(
+      dtDistanceFileNames[, rev(sort(unique(SNO2)))],
+      function ( iSNO2 ) {
+
+         # print(iSNO2)
+         # print(Sys.time())
+
+         cTempFile = paste0(
+            cAllMatchDistanceFolderName,
+            '/', 
+            iSNO2,
+            '.Rdata'
+         )
+
+         load(cTempFile)
+
+         # dtDistanceSummary[, c('DistancePassToXY','DistancePassXYSummary','DistanceReceiveAtXYSummary','DistanceReceiveFromXY') := NULL]
+
+         # dtDistanceSummary = dtDistanceSummary[!is.infinite(Distance) & !is.na(Distance)]
+
+         # dtDistanceSummary[Match == T, MatchDistance := Distance]
+         # dtDistanceSummary[Match == F, MatchDistance := 1000000]
+
+         dtDistanceSummary
+
+      }
+   ),
+   fill = T
+)
+
+dtDistanceSummary = rbind(
+   dtDistanceSummary[
+      SNO1 %in% dtSNOMapping[matchId %in% dtPlayers[playerId == iPlayerId][teamId == iTeamId, unique(matchId)] & teamId %in% iTeamId, unique(SNO)] &
+      !(SNO2 %in% dtSNOMapping[matchId %in% dtPlayers[playerId == iPlayerId][teamId == iTeamId, unique(matchId)] & teamId %in% iTeamId, unique(SNO)])
+   ],
+   dtDistanceSummary[
+      SNO2 %in% dtSNOMapping[matchId %in% dtPlayers[playerId == iPlayerId][teamId == iTeamId, unique(matchId)] & teamId %in% iTeamId, unique(SNO)] &
+      !(SNO1 %in% dtSNOMapping[matchId %in% dtPlayers[playerId == iPlayerId][teamId == iTeamId, unique(matchId)] & teamId %in% iTeamId, unique(SNO)]),
+      list(
+         playerId1 = playerId2,
+         playerId2 = playerId1,
+         SNO1 = SNO2,
+         SNO2 = SNO1,
+         Distance,
+         Match,
+         DistanceReceiveFromXY,
+         DistanceReceiveAtXYSummary,
+         DistancePassXYSummary,
+         DistancePassToXY
+      )
+   ],
+   dtDistanceSummary[
+      SNO1 %in% dtSNOMapping[matchId %in% dtPlayers[playerId == iPlayerId][teamId == iTeamId, unique(matchId)] & teamId %in% iTeamId, unique(SNO)] &
+      SNO2 %in% dtSNOMapping[matchId %in% dtPlayers[playerId == iPlayerId][teamId == iTeamId, unique(matchId)] & teamId %in% iTeamId, unique(SNO)]
+   ],
+   fill = T
+)
+
+dtDistanceSummary[, DistancePassesMade := ( (DistancePassToXY ^ 2) + (DistancePassXYSummary ^ 2)) ^ 0.5]
+
+dtDistanceSummary = merge(
+   dtDistanceSummary,
+   merge(
+      dtSNOMapping[, list(SNO2 = SNO, teamId2 = teamId, matchId2 = matchId, Tournament2 = Tournament)],
+      dtPlayers[, list(name2 = name, playerId2 = playerId, teamId2 = teamId, matchId2 = matchId)],
+      c('matchId2','teamId2')
+   )[,
+      list(name2, playerId2, Tournament2, SNO2)
+   ],
+   c('playerId2', 'SNO2')
+)
+
+dtDistanceSummary[,
+   name2Factor := factor(
+      name2,
+      # levels = dtDistanceSummary[
+      #    playerId1 == iPlayerId, 
+      #    median(Distance), 
+      #    list(playerId2, name2)
+      # ][
+      #    order(V1), 
+      #    name2
+      # ],
+      levels = dtDistanceSummary[
+         playerId1 == iPlayerId
+      ][
+      # dtDistanceSummary[
+         Match == T & SNO1 != SNO2,
+         .SD[which.min(Distance)],
+         list(playerId2, SNO1)
+      ][, 
+         median(Distance), 
+         list(playerId2, name2)
+      ][
+         order(V1), 
+         name2
+      ],
+      ordered = T
+   )
+]
+
+dtDistanceSummary[, DistancePassesMade := ( (DistancePassToXY ^ 2) + (DistancePassXYSummary ^ 2)) ^ 0.5]
+
+dtComparisons = merge(
+   dtDistanceSummary[
+      playerId1 == iPlayerId
+   ],
+   dtDistanceSummary[
+      playerId1 == iPlayerId,
+      list(
+         .N,
+         MatchProportion = sum(Match) / .N
+      ),
+      list(
+         playerId2
+      )
+   ][
+      # V2 > 0.5
+      MatchProportion > 0
+   ][
+      # rev(order(MatchProportion))
+      ,
+      list(
+         playerId2,
+         MatchProportion
+      )
+   ],
+   'playerId2'
+)
+
+
+```
+
+## Motivation
+
+I poked my nose into <a href = "https://twitter.com/PannasNutmegs/status/1143112671870496771">this thread on Twitter</a>, about finding the next Virgil van Dijk. While <a href = "https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/">my measure of similarity in passing style</a> doesn't capture much from a defensive point of view, it should capture similarity in passing style with more nuance than the measure employed by the author in <a href = "https://medium.com/@pannasandnutmegs/finding-the-next-c34f522883b0">his post</a>, (% of passes forward / % of passes to final third). There are other factors that the author has also included in his analysis which this post does nothing to address.
+
+I got in touch with him and with his blessings, here is my partial Finding the Next van Dijk post.
+
+## Methodology
+
+I've linked the logic that I employ earlier.
+
+The focus was on identifying players from lower leagues so I tried my method on the second tiers of German and English football The charts below compare the passing styles of various players from these leagues wth Virgil van Dijk's passing style. I've included Virgil van Dijk's statistics in both the plots as well to have some reference. I've excluded comparisons between the same match for van Dijk since that would lead to the distance between those performances all being 0 instead of telling us about the match to match variation in his game.
+
+One thing to note is that this isn't an overall similarity of two players but a similarity between the way the two players played in two paritcular matches. Depending on how we choose to go from a many matches to many matches comparison to a one player to one player comparison, we could end up with different conclusions. The many to many that I compare is the closest match that every player had for each of van Dijk's performance and look at that distribution. Players who have played in various roles that van Dijk himself has played in, should have at least one match very similar to each of van Dijk's performances. Players who have played in some subset of roles that van Dijk has played in but haven't had to play in the some of the other roles will have some very similar points when the matches with the similar roles are compared, but also some points farther away for the matches where a similar role wasn't played in. Getting from this many to many to the one to one is something I'll talk about later after we've seen the numbers.
+
+The distance measure uses four variables to calculate distance, which are all combined for each match and captured in the red elements of the plot. Since the author of the aforementioned article was only interested in the passing style, I calculated another distance measure based on just the coordinates of where the respective player passed from and passed to, which is captured in the blue elements.
+
+## Results 
+
+```{r PlayerPlot, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 6, results = 'asis'}
+
+if ( F ) {
+
+   ggplot(
+      dtComparisons[
+         MatchProportion > 0.5
+      ]
+   ) + 
+      geom_jitter(
+         aes(
+            # x = factor(playerId2),
+            y = name2,
+            x = Distance,
+            color = Match
+         ),
+         width = 0.25
+      ) + 
+      theme(
+         axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)
+      )
+   
+   ggplot(
+      dtComparisons[
+         Match == T
+      ][
+         MatchProportion > 0.5
+      ]
+   ) + 
+      geom_boxplot(
+         aes(
+            # x = factor(playerId2),
+            x = name2Factor,
+            # y = Distance,
+            y = DistancePassesMade,
+            group = name2
+         ),
+         width = 0.5
+      ) + 
+      geom_jitter(
+         aes(
+            # x = factor(playerId2),
+            x = name2Factor,
+            # y = Distance,
+            y = DistancePassesMade
+         ),
+         width = 0.25,
+         alpha = 0.1
+      ) + 
+      theme(
+         axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)
+      )
+
+}
+
+if ( F ) {
+
+   ggplot(
+      dtComparisons[
+      # dtDistanceSummary[
+         Match == T, 
+         .SD[which.min(Distance)], 
+         list(playerId2, SNO1)
+      ][
+         # playerId2 %in% dtDistanceSummary[, min(DistancePassesMade), playerId2][V1 <= 9, playerId2]
+      ][
+         MatchProportion > 0.5
+      ]
+   ) + 
+      geom_boxplot(
+         aes(
+            # x = factor(playerId2),
+            x = name2Factor,
+            y = Distance,
+            group = name2
+         )
+      ) + 
+      geom_jitter(
+         aes(
+            # x = factor(playerId2),
+            x = name2Factor,
+            y = Distance,
+            # color = Match
+         ),
+         width = 0.1
+      ) + 
+      # scale_y_log10() +
+      theme(
+         axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)
+      )
+   
+}
+
+if ( F ) {
+   
+   ggplot(
+      dtComparisons[
+      # dtDistanceSummary[
+         Match == T, 
+         .SD[which.min(DistancePassesMade)], 
+         list(playerId2, SNO1)
+      ][
+         # playerId2 %in% dtDistanceSummary[, min(DistancePassesMade), playerId2][V1 <= 9, playerId2]
+      ][
+         MatchProportion > 0.5
+      ]
+   ) + 
+      geom_boxplot(
+         aes(
+            # x = factor(playerId2),
+            x = name2Factor,
+            y = DistancePassesMade,
+            group = name2
+         )
+      ) + 
+      geom_jitter(
+         aes(
+            # x = factor(playerId2),
+            x = name2Factor,
+            y = DistancePassesMade,
+            # color = Match
+         ),
+         width = 0.1
+      ) + 
+      # scale_y_log10() +
+      theme(
+         axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)
+      )
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+pBundesliga2 = ggplot(
+   dtComparisons[
+   # dtDistanceSummary[
+      Match == T & SNO1 != SNO2,
+      .SD[which.min(Distance)],
+      list(playerId2, SNO1)
+   ][
+      # playerId2 %in% dtDistanceSummary[, min(DistancePassesMade), playerId2][V1 <= 9, playerId2]
+   ][
+      MatchProportion > 0.5
+   ][
+      playerId2 == iPlayerId | 
+      Tournament2 == 'Bundesliga2'
+   ]
+) + 
+   geom_boxplot(
+      aes(
+         # x = factor(playerId2),
+         x = name2Factor,
+         y = Distance,
+         group = name2,
+         color = 'DistanceOverall'
+      ), 
+      outlier.shape = NA,
+      width = 0.9
+   ) + 
+   geom_boxplot(
+      aes(
+         # x = factor(playerId2),
+         x = name2Factor,
+         y = DistancePassesMade,
+         group = name2,
+         color = 'DistancePassesMade'
+      ), 
+      outlier.shape = NA,
+      width = 0.6
+   ) + 
+   geom_jitter(
+      aes(
+         # x = factor(playerId2),
+         x = name2Factor,
+         y = Distance,
+         # color = Match,
+         color = 'DistanceOverall'
+      ),
+      width = 0.1,
+      alpha = 0.4
+   ) + 
+   geom_jitter(
+      aes(
+         # x = factor(playerId2),
+         x = name2Factor,
+         y = DistancePassesMade,
+         color = 'DistancePassesMade'
+      ),
+      width = 0.1,
+      alpha = 0.4
+   ) + 
+   # scale_y_log10() +
+   theme(
+      axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)
+   ) +
+   # coord_flip() +
+   # facet_wrap(~Tournament2, ncol = 1, scale = 'free_x') + 
+   geom_blank()
+
+print(pBundesliga2)
+
+pChampionship = ggplot(
+   dtComparisons[
+   # dtDistanceSummary[
+      Match == T & SNO1 != SNO2,
+      .SD[which.min(Distance)],
+      list(playerId2, SNO1)
+   ][
+      # playerId2 %in% dtDistanceSummary[, min(DistancePassesMade), playerId2][V1 <= 9, playerId2]
+   ][
+      MatchProportion > 0.5
+   ][
+      playerId2 == iPlayerId | 
+      Tournament2 == 'Championship'
+   ]
+) + 
+   geom_boxplot(
+      aes(
+         # x = factor(playerId2),
+         x = name2Factor,
+         y = Distance,
+         group = name2,
+         color = 'DistanceOverall'
+      ), 
+      outlier.shape = NA,
+      width = 0.9
+   ) + 
+   geom_boxplot(
+      aes(
+         # x = factor(playerId2),
+         x = name2Factor,
+         y = DistancePassesMade,
+         group = name2,
+         color = 'DistancePassesMade'
+      ), 
+      outlier.shape = NA,
+      width = 0.6
+   ) + 
+   geom_jitter(
+      aes(
+         # x = factor(playerId2),
+         x = name2Factor,
+         y = Distance,
+         # color = Match,
+         color = 'DistanceOverall'
+      ),
+      width = 0.3,
+      alpha = 0.4
+   ) + 
+   geom_jitter(
+      aes(
+         # x = factor(playerId2),
+         x = name2Factor,
+         y = DistancePassesMade,
+         color = 'DistancePassesMade'
+      ),
+      width = 0.1,
+      alpha = 0.4
+   ) + 
+   # scale_y_log10() +
+   theme(
+      axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)
+   ) +
+   # coord_flip() +
+   # facet_wrap(~Tournament2, ncol = 1, scale = 'free_x') + 
+   geom_blank()
+
+print(pChampionship)
+
+```
+
+## Observations
+
+Bundesliga2 has maybe 6 - 10 players of interest, namely, `r dtComparisons[
+   # dtDistanceSummary[
+      Match == T & SNO1 != SNO2,
+      .SD[which.min(Distance)],
+      list(playerId2, SNO1)
+   ][
+      # playerId2 %in% dtDistanceSummary[, min(DistancePassesMade), playerId2][V1 <= 9, playerId2]
+   ][
+      MatchProportion > 0.5
+   ][ 
+      Tournament2 == 'Bundesliga2',
+      paste0(as.character(sort(unique(name2Factor))[1:10]), collapse = ', ')
+   ]`
+
+The Championship has maybe 5 - 12 players of interest, namely, `r dtComparisons[
+   # dtDistanceSummary[
+      Match == T & SNO1 != SNO2,
+      .SD[which.min(Distance)],
+      list(playerId2, SNO1)
+   ][
+      # playerId2 %in% dtDistanceSummary[, min(DistancePassesMade), playerId2][V1 <= 9, playerId2]
+   ][
+      MatchProportion > 0.5
+   ][ 
+      Tournament2 == 'Championship',
+      paste0(as.character(sort(unique(name2Factor))[1:12]), collapse = ', ')
+   ]`
+
+After this list, there seems to be a slight jump up in distances so I'm going to conveniently assume that point as a cut-off and ignore the names from farther out.
+
+Cameron Carter-Vickers plot indicates him to be a player who could make very similar passes to van Dijk, which is why the distance in passes made is much lower compared to other players, but given that his overall passes distance isn't correspondingly low, it implies he doesn't receive passes from and / or in as similar areas as van Dijk. Liam Ridgewell is another example of a player whose statistics indicate the same. If we define passing similarity as only similarlity in the passes made, we might pick these players ahead of some of the other players on the list. If we instead define is as similarity in passes made and received, then the order of names in this plot would be a better ranking of similarity. 
+
+Side note - extreme outliers to the trend of overall distance being proportional to distance of passes made, like Jake Cooper, Yoann Barbet, and Stefan Thesker may be interesting cases to study more.
+
+You could cut and slice this in any other way too, for example instead of taking the typical similarity you could choose to check for enough number of comparisons having a low enough distance, the idea being that the player has played very similarly to van Dijk in at least some matches and maybe his role in other matches didn't allow for close similarities from those matches. For example, Liam Ridewell has a bunch of points at around 15 overall distance but also has points farther away which pulls his median distance higher, whereas Tyrone Mings seems to hover around the 17 overall distance mark consistently, which keeps his median lower, but he may not have the same number of instances of a distance of around 15 as Ridgewell. This might imply that compared to Mings, Ridgwell is more capable of passing like van Dijk for some of the games that van Dijk played, but in some other matches van Dijk's passing was very different from any of Ridgewell's games. Mings had some similarity to both those sets of van Dijk's performances but didn't have as much of a similarity to either of those sets as Ridhewell managed with the first set. If it is the first set of van Dijk's performances that we're trying to find similarities with, then Ridgewell might be a better candidate than Mings.

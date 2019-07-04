@@ -62,10 +62,13 @@ vcTeamNames = c(
 
 ```
 
+Very WIP stage.
+
 # {.tabset .tabset-fade .tabset-pills}
 
 ## Motivation
 
+In this post, I try to gain an idea of the roles more frequently employed by some of the team.
 
 ```{r LoadingProcessedData, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
 ```
@@ -77,9 +80,14 @@ vcTeamNames = c(
 ```
 
 
-## Teams {.tabset .tabset-fade .tabset-pills}
+## Methodology
+
+I resume from <a href="https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/PlayerRoles.html">this post</a>. I limit the granularity of the clusters to 26, instead of a more tempting larger number of clusters, because given the few samples per team, a very large number of clusters may spread the data too thing to be able to make sense of anything.
+
+I just look at the number of times a role occurred with a particular team in proportion to the total matches that team played.
 
 
+## Cases {.tabset .tabset-fade .tabset-pills}
 
 ```{r TeamAssignment1, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
 iTeamIndex = 1
@@ -88,6 +96,14 @@ iTeamIndex = 1
 ```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
 ```
 
+Some of the roles frequently observed are - the right sided CDM ( Xhaka, Elneny, ) attacking LB ( Kolasinac, ) attacking RB ( Bellerin, ) and the LW-CAM hybrid ( Sanchez, Welbeck. ) 
+
+The RCB doesn't play wide as often as the LCB, maybe because Monreal plays LCB on many occassions whose preferred position is left back?
+
+The forwards, Lacazette and Aubameyang, typical tend to play higher up the pitch.
+
+Iwobi spends around half his appearances playing in RW roles, and half playing in all sorts of other roles.
+
 ```{r TeamAssignment2, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
 iTeamIndex = 2
 ```
@@ -95,6 +111,7 @@ iTeamIndex = 2
 ```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
 ```
 
+Too few matches in the sample so skipping the detailed analysis.
 
 ```{r TeamAssignment3, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
 iTeamIndex = 3
@@ -102,6 +119,14 @@ iTeamIndex = 3
 
 ```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
 ```
+
+Some of the roles frequently observed are - the right sided CDM ( Henderson, Can, ) attacking LB ( Robertson, ) defensive RB ( Gomez, Alexander-Arnold, ) and the attacking RW ( Salah. )
+
+The LCM role has three players - Wijnaldum who stays compact, Coutinho who contributes to attacks, and Milner who can do both.
+
+RCM, similarly, has Henderson who is usually in a defensive role, Chamberlain, who is in an offensive role, and some others who can do a bit of both.
+
+The LW role almost never has the player, usually Mane, playing wide.
 
 
 ```{r TeamAssignment4, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
@@ -111,6 +136,9 @@ iTeamIndex = 4
 ```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
 ```
 
+Some of the roles frequently observed are - the right sided CDM ( Fernandinho, ) the high left fwd ( Jesus, ) the LW-CAM hybrid ( Sane, ) the RCM-RW hybrid ( De Bruyne, ) and the attacking RW ( Sterling, Silva. )
+
+A majority of Jesus' appearances are in the high left striker role.
 
 
 ```{r TeamAssignment5, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
@@ -120,6 +148,11 @@ iTeamIndex = 5
 ```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
 ```
 
+Some of the roles frequently observed are - the left sided CDM ( Matic, ) the attacking LB ( Young, Blind, Shaw, ) the defensive RB ( Valencia, ) and the RCM-RW hybrid ( Herrerra, Fellaini, Lingard, Pogba, etc. ) and the attacking RW ( Sterling, Silva. )
+
+Half of Lukaku's appearances are in the hybrid ST-RW role.
+
+Mata was usually positioned on the right in an attacking role.
 
 ```{r TeamAssignment6, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
 iTeamIndex = 6
@@ -128,6 +161,8 @@ iTeamIndex = 6
 ```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
 ```
 
+Too few matches in the sample so skipping the detailed analysis.
+
 ```{r TeamAssignment7, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
 iTeamIndex = 7
 ```
@@ -135,6 +170,7 @@ iTeamIndex = 7
 ```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
 ```
 
+Too few matches in the sample so skipping the detailed analysis.
 
 ```{r TeamAssignment8, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
 iTeamIndex = 8
@@ -143,6 +179,7 @@ iTeamIndex = 8
 ```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
 ```
 
+Too few matches in the sample so skipping the detailed analysis.
 
 ```{r TeamAssignment9, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
 iTeamIndex = 9
@@ -151,6 +188,12 @@ iTeamIndex = 9
 ```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
 ```
 
+Some of the roles frequently observed are - the right sided CDM ( Motta, Rabiot, ) the attacking LB ( Kurazawa, Yuri, ) the defensive LCM ( Rabiot, Draxler, ) the defensive RB ( Alves, Meunier, ) and the attacking RW ( Di Maria, Mbappe. )
+
+Motta mostly plays in the right sided CDM position.
+
+Veratti usually plays in a more central RCM position. Lo Celso plays in a wider role.
+
 
 ```{r TeamAssignment10, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
 iTeamIndex = 10
@@ -158,3 +201,67 @@ iTeamIndex = 10
 
 ```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
 ```
+
+Too few matches in the sample so skipping the detailed analysis.
+
+```{r TeamAssignment11, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+iTeamIndex = 11
+```
+
+```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
+```
+
+Too few matches in the sample so skipping the detailed analysis.
+
+```{r TeamAssignment12, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+iTeamIndex = 12
+```
+
+```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
+```
+
+Some of the roles frequently observed are - the right sided CDM ( Busquets, ) the ST-RW and ST-LW hybrids ( Messi, Suarez, ) the attacking LB ( Alba, ) the LW-CAM hybrid ( Coutinho, ) the defensive RB ( Semedo, Roberto, ) and the attacking RW ( Dembele. )
+
+Iniesta mostly played in the LCM-LW hybird role.
+
+Semedo mostly played in a more defensive RB role.
+
+
+```{r TeamAssignment13, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+iTeamIndex = 13
+```
+
+```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
+```
+
+Some of the roles frequently observed are - the right sided CDM ( Casemiro, ) the ST-LW hybrid ( Ronaldo, Benzema, ) the attacking LB ( Marelo, ) the RCM-RW hybrid ( Modric, ) and the attacking RW ( Bale, Vasquez. )
+
+The CAM role typically falls to Isco.
+
+Isco in the LCM role is usually in the LCM-CDM hybrid role. Asensio, in the LCM role, is usually in the LCM-LW hybrid role.
+
+The RCM-RW hybrid role is typically Modric.
+
+```{r TeamAssignment14, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+iTeamIndex = 14
+```
+
+```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
+```
+
+Too few matches in the sample so skipping the detailed analysis.
+
+```{r TeamAssignment15, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+iTeamIndex = 15
+```
+
+```{r child = '//media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/TeamStrategy.Rmd'}
+```
+
+Most of the roles are frequently observed - right sided CDM ( Jorginho, ) high left striker ( Mertens, ) attacking LB ( Ghoulam, Rui, ) LCM-LW hybrid ( Hamsik, ) the defensive RB ( Hysaj, ) and the RCM-RW hybrid ( Allan. )
+
+The very skewed distribution of the role occurrence indicates a team which followed more or less the same strategy through all their games.
+
+## Get in touch
+
+Do you have suggestions, comments, new ideas to build on top of this, etc.? I'd love to hear. Find me on Twitter - <a href="https://twitter.com/thecomeonman">@thecomeonman</a>.

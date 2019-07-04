@@ -176,8 +176,14 @@ I use this concept and try it to solve some other problem statements -
 
 * <a href = 'https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/PlayerRoles'>Marking out player roles</a>
 
+* <a href = 'https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/TeamStrategies'>Team Strategies</a>
+
+And some other, more ad-hoc uses
+
+* <a href = 'https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/VVDSimilarities'>Finding the Next Virgil van Dijk</a>
+
 The work is a little unorganised but hopefully it is still in good enough shape to make sense.
 
 ## Get in touch
 
-Do you have suggestions, comments, new ideas to build on top of this, etc.? I'd love to hear. Find me on Twitter - @thecomeonman.
+Do you have suggestions, comments, new ideas to build on top of this, etc.? I'd love to hear. Find me on Twitter - <a href="https://twitter.com/thecomeonman">@thecomeonman</a>.
