@@ -1,0 +1,743 @@
+---
+title: "Similar Passing Style to Man City Players"
+author: "Aditya Kothari"
+date: "4 July 2019"
+output: html_document
+---
+
+```{r Setup, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'hide'}
+   
+rm(list = ls())
+
+library(data.table)
+library(emdist)
+library(snow)
+library(snowfall)
+library(ggplot2)
+library(scales)
+library(knitr)
+library(clue)
+theme_set(theme_bw(12))
+
+knitr::knit_meta(class=NULL, clean = TRUE)
+options(knitr.duplicate.label = 'allow')
+
+```
+
+```{r ParametersFunctions, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+
+cPostCodeFolderLocation = '/media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/'
+cPostDataFolderLocation = '/media/ask/Data/Personal/Projects/Personal/NoSuchThingAs4231'
+
+source(paste0(cPostCodeFolderLocation, '/Common.R'))
+read_chunk(paste0(cPostCodeFolderLocation, '/CommonChunksSimilarPlayers.R'))
+
+cTeamName = 'Man City'
+# 'Liverpool'
+
+```
+
+```{r DataLoading, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+
+load(paste0(
+   cPostDataFolderLocation,
+   '/Data/FormationMatchingData/ProcessedData.Rdata'
+))
+
+iTeamId = dtMatches[teamName == cTeamName, teamId[1]]
+
+# rm(dtPasses)
+# dtSNOMapping = dtPasses[, list(SNO = SNO[1]), list(matchId = matchId, teamId = teamId)]
+# rm(dtPasses)
+# rm(dtPlayers)
+# rm(dtFormationDetails)
+# rm(dtFormationSets)
+
+
+load(
+   paste0(
+      cPostDataFolderLocation,
+      '/Data/FormationMatchingData/DistanceFileNames.Rdata'
+   )
+)
+
+
+dtDistanceSummary = rbindlist(
+   lapply(
+      dtDistanceFileNames[, rev(sort(unique(SNO2)))],
+      function ( iSNO2 ) {
+
+         # print(iSNO2)
+         # print(Sys.time())
+
+         cTempFile = paste0(
+            cAllMatchDistanceFolderName,
+            '/', 
+            dtSNOMapping[
+               SNO == iSNO2,
+               paste0(
+                  matchId, '_', teamId
+               )
+            ],
+            '.Rdata'
+         )
+
+         load(cTempFile)
+
+         # dtDistanceSummary[, c('DistancePassToXY','DistancePassXYSummary','DistanceReceiveAtXYSummary','DistanceReceiveFromXY') := NULL]
+
+         # dtDistanceSummary = dtDistanceSummary[!is.infinite(Distance) & !is.na(Distance)]
+
+         # dtDistanceSummary[Match == T, MatchDistance := Distance]
+         # dtDistanceSummary[Match == F, MatchDistance := 1000000]
+
+         dtDistanceSummary = dtDistanceSummary[
+            SNO1 %in% dtSNOMapping[teamId %in% iTeamId, unique(SNO)] |
+            SNO2 %in% dtSNOMapping[teamId %in% iTeamId, unique(SNO)]
+         ]
+         
+         dtDistanceSummary
+
+      }
+   ),
+   fill = T
+)
+
+dtDistanceSummary = rbind(
+   dtDistanceSummary[
+      SNO1 %in% dtSNOMapping[teamId %in% iTeamId, unique(SNO)] &
+      !(SNO2 %in% dtSNOMapping[teamId %in% iTeamId, unique(SNO)])
+   ],
+   dtDistanceSummary[      
+      SNO2 %in% dtSNOMapping[teamId %in% iTeamId, unique(SNO)] &
+      !(SNO1 %in% dtSNOMapping[teamId %in% iTeamId, unique(SNO)]),
+      list(
+         playerId1 = playerId2,
+         playerId2 = playerId1,
+         SNO1 = SNO2,
+         SNO2 = SNO1,
+         Distance,
+         Match,
+         DistanceReceiveFromXY,
+         DistanceReceiveAtXYSummary,
+         DistancePassXYSummary,
+         DistancePassToXY
+      )
+   ],
+   dtDistanceSummary[
+      SNO2 %in% dtSNOMapping[teamId %in% iTeamId, unique(SNO)] &
+      SNO1 %in% dtSNOMapping[teamId %in% iTeamId, unique(SNO)]
+   ],
+   dtDistanceSummary[
+      SNO2 %in% dtSNOMapping[teamId %in% iTeamId, unique(SNO)] &
+      SNO1 %in% dtSNOMapping[teamId %in% iTeamId, unique(SNO)],
+      list(
+         playerId1 = playerId2,
+         playerId2 = playerId1,
+         SNO1 = SNO2,
+         SNO2 = SNO1,
+         Distance,
+         Match,
+         DistanceReceiveFromXY,
+         DistanceReceiveAtXYSummary,
+         DistancePassXYSummary,
+         DistancePassToXY
+      )
+   ],
+   fill = T
+)
+
+# dtDistanceSummary[, DistancePassesMade := ( (DistancePassToXY ^ 2) + (DistancePassXYSummary ^ 2)) ^ 0.5]
+
+dtPlayers[
+   name %in% dtPlayers[, length(unique(playerId)), name][V1 > 1, name],
+   name := paste0(name, rank(playerId)),
+   name
+]
+
+dtDistanceSummary = merge(
+   dtDistanceSummary,
+   merge(
+      dtSNOMapping[, list(SNO2 = SNO, teamId2 = teamId, matchId2 = matchId, Tournament2 = Tournament)],
+      dtPlayers[, list(name2 = name, playerId2 = playerId, teamId2 = teamId, matchId2 = matchId)],
+      c('matchId2','teamId2')
+   )[,
+      list(name2, playerId2, Tournament2, SNO2)
+   ],
+   c('playerId2', 'SNO2')
+)
+
+dtDistanceSummary = merge(
+   dtDistanceSummary,
+   merge(
+      dtSNOMapping[, list(matchId2 = matchId, teamId2 = teamId, SNO2 = SNO)],
+      dtMatches[, list(matchId2 = as.integer(matchId), teamId2 = as.integer(teamId), teamName2 = teamName)],
+      c('matchId2','teamId2')
+   )[, list(SNO2, teamId2, teamName2)],
+   c('SNO2')     
+)
+
+dtPlayersOfInterest = merge(
+   dtPlayers[, list(name = name[1]), playerId],
+   dtDistanceSummary[, list(Appearances = length(unique(SNO1))), list(playerId = playerId1)],
+   'playerId'
+)[
+   order(Appearances)
+][
+   Appearances >= 5
+]
+
+```
+
+## Motivation
+
+Transfer rumours
+
+## Methodology
+
+<a href = "https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/">My measure of similarity in passing style</a>
+
+I've included the selected player's statistics in both the plots as well to have some reference. I've excluded comparisons between the same match since that would lead to the distance between those performances all being 0 instead of telling us about the match to match variation in his game.
+
+One thing to note is that this isn't an overall similarity of two players but a similarity between the way the two players played in two paritcular matches. Depending on how we choose to go from a many matches to many matches comparison to a one player to one player comparison, we could end up with different conclusions. The many to many that I compare is the closest match that every player had for each of the selected palyer's performance and look at that distribution. Players who have played in various roles that the selected player himself has played in, should have at least one match very similar to each of the selected player's performances. Players who have played in some subset of roles that the selected player has played in but haven't had to play in the some of the other roles will have some very similar points when the matches with the similar roles are compared, but also some points farther away for the matches where a similar role wasn't played in. Getting from this many to many to the one to one is something I'll talk about later after we've seen the numbers.
+
+## Results {.tabset .tabset-fade .tabset-pills}
+
+
+```{r PlayerPlot, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 6, results = 'asis'}
+
+if ( exists('iPlayerIdIndex') ) {
+
+   if ( iPlayerIdIndex <= nrow(dtPlayersOfInterest) ) {
+         
+      dtDistanceSummary[,
+         name2Factor := factor(
+            name2,
+            # levels = dtDistanceSummary[
+            #    playerId1 == iPlayerId, 
+            #    median(Distance), 
+            #    list(playerId2, name2)
+            # ][
+            #    order(V1), 
+            #    name2
+            # ],
+            levels = dtDistanceSummary[
+               playerId1 == iPlayerId
+            ][
+            # dtDistanceSummary[
+               Match == T & SNO1 != SNO2,
+               .SD[which.min(Distance)],
+               list(playerId2, SNO1)
+            ][, 
+               median(Distance), 
+               list(playerId2, name2)
+            ][
+               order(V1), 
+               name2
+            ],
+            ordered = T
+         )
+      ]
+   
+      dtComparisons = merge(
+         dtDistanceSummary[
+            playerId1 == iPlayerId
+         ],
+         dtDistanceSummary[
+            playerId1 == iPlayerId,
+            list(
+               .N,
+               MatchProportion = sum(Match) / .N
+            ),
+            list(
+               playerId2
+            )
+         ][
+            MatchProportion > 0.4
+         ][
+            # rev(order(MatchProportion))
+            ,
+            list(
+               playerId2,
+               MatchProportion
+            )
+         ],
+         'playerId2'
+      )
+   
+      if ( F ) {
+   
+         ggplot(
+            dtComparisons[
+               MatchProportion > 0.5
+            ]
+         ) + 
+            geom_jitter(
+               aes(
+                  # x = factor(playerId2),
+                  y = name2,
+                  x = Distance,
+                  color = Match
+               ),
+               width = 0.25
+            ) + 
+            theme(
+               axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)
+            )
+         
+         ggplot(
+            dtComparisons[
+               Match == T
+            ][
+               MatchProportion > 0.25
+            ]
+         ) + 
+            geom_boxplot(
+               aes(
+                  # x = factor(playerId2),
+                  x = name2Factor,
+                  # y = Distance,
+                  y = DistancePassesMade,
+                  group = name2
+               ),
+               width = 0.5
+            ) + 
+            geom_jitter(
+               aes(
+                  # x = factor(playerId2),
+                  x = name2Factor,
+                  # y = Distance,
+                  y = DistancePassesMade
+               ),
+               width = 0.25,
+               alpha = 0.1
+            ) + 
+            theme(
+               axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)
+            )
+   
+      }
+   
+      if ( F ) {
+   
+         ggplot(
+            dtComparisons[
+            # dtDistanceSummary[
+               Match == T, 
+               .SD[which.min(Distance)], 
+               list(playerId2, SNO1)
+            ][
+               # playerId2 %in% dtDistanceSummary[, min(DistancePassesMade), playerId2][V1 <= 9, playerId2]
+            ][
+               MatchProportion > 0.5
+            ]
+         ) + 
+            geom_boxplot(
+               aes(
+                  # x = factor(playerId2),
+                  x = name2Factor,
+                  y = Distance,
+                  group = name2
+               )
+            ) + 
+            geom_jitter(
+               aes(
+                  # x = factor(playerId2),
+                  x = name2Factor,
+                  y = Distance,
+                  # color = Match
+               ),
+               width = 0.1
+            ) + 
+            # scale_y_log10() +
+            theme(
+               axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)
+            )
+         
+      }
+   
+      if ( F ) {
+         
+         ggplot(
+            dtComparisons[
+            # dtDistanceSummary[
+               Match == T, 
+               .SD[which.min(DistancePassesMade)], 
+               list(playerId2, SNO1)
+            ][
+               # playerId2 %in% dtDistanceSummary[, min(DistancePassesMade), playerId2][V1 <= 9, playerId2]
+            ][
+               MatchProportion > 0.25
+            ]
+         ) + 
+            geom_boxplot(
+               aes(
+                  # x = factor(playerId2),
+                  x = name2Factor,
+                  y = DistancePassesMade,
+                  group = name2
+               )
+            ) + 
+            geom_jitter(
+               aes(
+                  # x = factor(playerId2),
+                  x = name2Factor,
+                  y = DistancePassesMade,
+                  # color = Match
+               ),
+               width = 0.1
+            ) + 
+            # scale_y_log10() +
+            theme(
+               axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)
+            )
+   
+      }
+   
+         # print('<div id="results" class="section level2 tabset tabset-fade tabset-pills">')
+         # print('<h2>Results</h2>')
+         # cat(
+         #    paste0(
+         #       '<div id="',
+         #       iPlayerId, cTournament,
+         #       '" class="section level4">'
+         #    )
+         # )
+         # 
+         # cat(
+         #    paste0(
+         #       '<h4>',
+         #       cTournament,
+         #       '</h4>'
+         #    )
+         # )
+         # 
+         
+         pTournament = ggplot(
+            melt(
+               dtComparisons[
+               # dtDistanceSummary[
+                  Match == T & SNO1 != SNO2,
+                  .SD[which.min(Distance)],
+                  list(playerId2, SNO1)
+               ][
+                  name2 %in% levels(name2Factor)[sapply(levels(name2Factor), function(x) x %in% name2)][1:50]
+               ][
+                  # playerId2 %in% dtDistanceSummary[, min(DistancePassesMade), playerId2][V1 <= 9, playerId2]
+               ][
+                  # MatchProportion > 0.25
+               ][
+                  # playerId2 == iPlayerId | 
+                  # Tournament2 == cTournament |
+                  ,
+                  list(
+                     playerId2,
+                     name2Factor,
+                     name2,
+                     teamName2,
+                     Tournament2,
+                     DistanceReceiveFromXY,
+                     DistanceReceiveAtXYSummary,
+                     DistancePassXYSummary,
+                     DistancePassToXY,
+                     Distance 
+                  )
+               ],
+               id.vars = c('playerId2','name2','teamName2','name2Factor','Tournament2') 
+            )
+         ) + 
+            geom_boxplot(
+               aes(
+                  # x = factor(playerId2),
+                  x = name2Factor,
+                  y = value,
+                  group = name2,
+                  color = playerId2 == iPlayerId
+               ), 
+               outlier.shape = NA,
+               width = 0.9
+            ) + 
+            # geom_boxplot(
+            #    aes(
+            #       # x = factor(playerId2),
+            #       x = name2Factor,
+            #       y = DistancePassesMade,
+            #       group = name2,
+            #       color = 'DistancePassesMade'
+            #    ), 
+            #    outlier.shape = NA,
+            #    width = 0.6
+            # ) + 
+            geom_jitter(
+               aes(
+                  # x = factor(playerId2),
+                  x = name2Factor,
+                  y = value,
+                  color = playerId2 == iPlayerId
+               ),
+               width = 0.1,
+               alpha = 0.4
+            ) + 
+            # geom_jitter(
+            #    aes(
+            #       # x = factor(playerId2),
+            #       x = name2Factor,
+            #       y = DistancePassesMade,
+            #       color = 'DistancePassesMade'
+            #    ),
+            #    width = 0.1,
+            #    alpha = 0.4
+            # ) + 
+            # scale_y_log10() +
+            theme(
+               axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)
+            ) +
+            # coord_flip() +
+            # facet_wrap(~Tournament2, ncol = 1, scale = 'free_x') + 
+            scale_colour_discrete(guide = 'none') +
+            facet_wrap(~variable, ncol = 1, scales = 'free_y') + 
+            scale_x_discrete(
+               breaks = dtComparisons[, name2[1], name2Factor][order(name2Factor)][, V1],
+               labels = dtComparisons[, list(name2[1], paste(unique(teamName2), collapse = ', ')), name2Factor][order(name2Factor), paste0(V1, ' (', V2, ')')]
+            ) +
+            geom_blank() + 
+            labs(
+               # title = cTournament,
+               caption = 'Analysis by TheComeOnMan'
+            ) +
+            # coord_cartesian(ylim = c(NA, 40)) +
+            geom_blank()
+   
+         print(pTournament)
+         
+         
+         # cat('</div>')
+         # print('</div>')
+         
+      # }
+
+   }
+
+} else {
+   iPlayerIdIndex = 0
+}
+
+```
+
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 6, results = 'asis'}
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 6, results = 'asis'}
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 6, results = 'asis'}
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 6, results = 'asis'}
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 6, results = 'asis'}
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 6, results = 'asis'}
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 6, results = 'asis'}
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 6, results = 'asis'}
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 6, results = 'asis'}
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 6, results = 'asis'}
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 6, results = 'asis'}
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 6, results = 'asis'}
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 6, results = 'asis'}
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 6, results = 'asis'}
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 6, results = 'asis'}
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 6, results = 'asis'}
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 6, results = 'asis'}
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 6, results = 'asis'}
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+

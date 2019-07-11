@@ -182,6 +182,8 @@ And some other, more ad-hoc uses
 
 * <a href = 'https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/VVDSimilarities'>Finding the Next Virgil van Dijk</a>
 
+* <a href = 'https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/ManCity201819'>Finding alternatives to Man City of 2018-19</a>
+
 The work is a little unorganised but hopefully it is still in good enough shape to make sense.
 
 ## Get in touch
