@@ -174,15 +174,15 @@ I use this concept and try it to solve some other problem statements -
 
 * <a href = 'https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/SimilarPlayers.html'>Players in similar roles</a>
 
-* <a href = 'https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/PlayerRoles'>Marking out player roles</a>
+* <a href = 'https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/PlayerRoles.html'>Marking out player roles</a>
 
-* <a href = 'https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/TeamStrategies'>Team Strategies</a>
+* <a href = 'https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/TeamStrategies.html'>Team Strategies</a>
 
 And some other, more ad-hoc uses
 
-* <a href = 'https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/VVDSimilarities'>Finding the Next Virgil van Dijk</a>
+* <a href = 'https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/VVDSimilarities.html'>Finding the Next Virgil van Dijk</a>
 
-* <a href = 'https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/ManCity201819'>Finding alternatives to Man City of 2018-19</a>
+* <a href = 'https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/ManCity201819.html'>Finding alternatives to Man City of 2018-19</a>
 
 The work is a little unorganised but hopefully it is still in good enough shape to make sense.
 
