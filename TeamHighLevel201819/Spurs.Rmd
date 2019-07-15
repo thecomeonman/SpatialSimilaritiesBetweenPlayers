@@ -1,0 +1,236 @@
+---
+title: "Similar Passing Style to Tottenham Hotspurs Players"
+author: "Aditya Kothari"
+date: "4 July 2019"
+output: html_document
+---
+
+```{r Setup, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'hide'}
+   
+rm(list = ls())
+
+library(data.table)
+library(emdist)
+library(snow)
+library(snowfall)
+library(ggplot2)
+library(scales)
+library(knitr)
+library(clue)
+theme_set(theme_bw(12))
+
+knitr::knit_meta(class=NULL, clean = TRUE)
+options(knitr.duplicate.label = 'allow')
+
+```
+
+```{r ParametersFunctions, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+
+cPostCodeFolderLocation = '/media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/'
+cPostDataFolderLocation = '/media/ask/Data/Personal/Projects/Personal/NoSuchThingAs4231'
+
+source(paste0(cPostCodeFolderLocation, '/Common.R'))
+read_chunk(paste0(cPostCodeFolderLocation, '/CommonChunksTransfers.R'))
+
+cTeamName = 'Tottenham'
+
+```
+
+```{r DataLoading, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+```
+
+```{r DataFiltering, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+```
+
+# {.tabset .tabset-fade .tabset-pills}
+
+## Motivation
+
+Transfer rumours
+
+## Methodology
+
+<a href = "https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/">My measure of similarity in passing style</a>
+
+I've included the selected player's statistics in both the plots as well to have some reference. I've excluded comparisons between the same match since that would lead to the distance between those performances all being 0 instead of telling us about the match to match variation in his game.
+
+One thing to note is that this isn't an overall similarity of two players but a similarity between the way the two players played in two paritcular matches. Depending on how we choose to go from a many matches to many matches comparison to a one player to one player comparison, we could end up with different conclusions. The many to many that I compare is the closest match that every player had for each of the selected palyer's performance and look at that distribution. The final list of the players is sorted according to the median of this distribution. Players who have played in various roles that the selected player himself has played in, should have at least one match very similar to each of the selected player's performances. Players who have played in some subset of roles that the selected player has played in but haven't had to play in the some of the other roles will have some very similar points when the matches with the similar roles are compared, but also some points farther away for the matches where a similar role wasn't played in. Either of those cases will affect the value of the median. Another simpler way to compare players would just be look at the lowest distance values they have achieved against any performance of the selected player. I would also like to incorporate the playing style but for sake of simplicity I'm staying away from it for this post. I've talked about all of these in <a href = "">an earlier post</a>.
+
+For the concerned player, I've also narrowed down to one formation, and one position that they player played most often in during the season. When players play across multiple positions, then the comparison gets diffused between each of the roles that they player played. Within the same formation and the saame position, there are still many details that may vary which is the variation that we will try and understand through this measure, for instance a 4-2-3-1 at Arsenal may have the players playing very differently than a 4-2-3-1 at Burnley and the similarity measure should be able to understand this and and for the same position suggest a different set of players for the two teams.
+
+## Results {.tabset .tabset-fade .tabset-pills}
+
+
+
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 6, fig.height = 6, results = 'asis'}
+
+if ( !exists('iPlayerIdIndex') ) {
+   iPlayerIdIndex = 0
+}   
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPositionPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 4, fig.height = 3, results = 'asis'}
+```
+
+```{r ref.label = 'PlayerSimilarityPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+
+
+
+
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 6, fig.height = 6, results = 'asis'}
+
+if ( !exists('iPlayerIdIndex') ) {
+   iPlayerIdIndex = 0
+}   
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPositionPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 4, fig.height = 3, results = 'asis'}
+```
+
+```{r ref.label = 'PlayerSimilarityPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+
+
+
+
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 6, fig.height = 6, results = 'asis'}
+
+if ( !exists('iPlayerIdIndex') ) {
+   iPlayerIdIndex = 0
+}   
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPositionPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 4, fig.height = 3, results = 'asis'}
+```
+
+```{r ref.label = 'PlayerSimilarityPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+
+
+
+
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 6, fig.height = 6, results = 'asis'}
+
+if ( !exists('iPlayerIdIndex') ) {
+   iPlayerIdIndex = 0
+}   
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPositionPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 4, fig.height = 3, results = 'asis'}
+```
+
+```{r ref.label = 'PlayerSimilarityPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+
+
+
+
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 6, fig.height = 6, results = 'asis'}
+
+if ( !exists('iPlayerIdIndex') ) {
+   iPlayerIdIndex = 0
+}   
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPositionPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 4, fig.height = 3, results = 'asis'}
+```
+
+```{r ref.label = 'PlayerSimilarityPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+
+
+
+
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 6, fig.height = 6, results = 'asis'}
+
+if ( !exists('iPlayerIdIndex') ) {
+   iPlayerIdIndex = 0
+}   
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPositionPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 4, fig.height = 3, results = 'asis'}
+```
+
+```{r ref.label = 'PlayerSimilarityPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+
+
+
+
+
+```{r cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 6, fig.height = 6, results = 'asis'}
+
+if ( !exists('iPlayerIdIndex') ) {
+   iPlayerIdIndex = 0
+}   
+
+iPlayerIdIndex = iPlayerIdIndex + 1
+
+iPlayerId = dtPlayersOfInterest[iPlayerIdIndex, playerId]
+
+```
+
+### `r dtPlayersOfInterest[iPlayerIdIndex, name]` {.tabset .tabset-fade .tabset-pills}
+
+```{r ref.label = 'PlayerPositionPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 4, fig.height = 3, results = 'asis'}
+```
+
+```{r ref.label = 'PlayerSimilarityPlot', cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 10, fig.height = 15, results = 'asis'}
+```
+
+

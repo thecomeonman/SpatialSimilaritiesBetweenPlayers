@@ -182,7 +182,11 @@ And some other, more ad-hoc uses
 
 * <a href = 'https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/VVDSimilarities.html'>Finding the Next Virgil van Dijk</a>
 
-* <a href = 'https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/ManCity201819.html'>Finding alternatives to Man City of 2018-19</a>
+* <a href = 'https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/TeamHighLevel201819/ManCity.html'>Finding alternatives to Man City players of 2018-19</a>
+
+* <a href = 'https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/TeamHighLevel201819/Liverpool.html'>Finding alternatives to Liverpool players of 2018-19</a>
+
+* <a href = 'https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/TeamHighLevel201819/Spurs.html'>Finding alternatives to Tottenham players of 2018-19</a>
 
 The work is a little unorganised but hopefully it is still in good enough shape to make sense.
 
