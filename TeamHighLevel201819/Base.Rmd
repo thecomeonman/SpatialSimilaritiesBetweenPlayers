@@ -1,0 +1,86 @@
+---
+title: "Similar Passing Style to Atletico Players"
+author: "Aditya Kothari"
+output: html_document
+---
+
+```{r Setup, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'hide'}
+   
+rm(list = ls())
+
+library(data.table)
+library(emdist)
+library(snow)
+library(snowfall)
+library(ggplot2)
+library(scales)
+library(knitr)
+library(clue)
+theme_set(theme_bw(12))
+
+knitr::knit_meta(class=NULL, clean = TRUE)
+options(knitr.duplicate.label = 'allow')
+
+```
+
+```{r ParametersFunctions, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+
+cPostCodeFolderLocation = '/media/ask/Data/Personal/Projects/Personal/AnalysingFootballData/EMDRelated/'
+cPostDataFolderLocation = '/media/ask/Data/Personal/Projects/Personal/NoSuchThingAs4231'
+
+source(paste0(cPostCodeFolderLocation, '/Common.R'))
+read_chunk(paste0(cPostCodeFolderLocation, '/CommonChunksTransfers.R'))
+
+cTeamName = 'Atletico'
+# cTeamName = 'Man City'
+# cTeamName = 'Man Utd'
+# cTeamName = 'PSG'
+# cTeamName = 'Ajax'
+# cTeamName = 'Bayern'
+
+```
+
+```{r DataLoading, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+```
+
+```{r DataFiltering, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+```
+
+# {.tabset .tabset-fade .tabset-pills}
+
+## Motivation
+
+Transfer rumours
+
+## Methodology
+
+<a href = "https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/">My measure of similarity in passing style</a>. If you get lost in some of the details in the later paragraph, you may need to refer to this. If you don't care much, just look at the results anyway.
+
+This measure isn't an overall similarity of two players but a similarity between the way the two players played in two paritcular matches. Depending on how we choose to go from a many matches to many matches comparison to a one player to one player comparison, we could end up with different conclusions. The many to many that I compare is the closest match that every player had for each of the selected player's performance in performances that the two players were paired. The final list of the players is sorted according to the median of this set of numbers.
+
+For the concerned player, I've run this measure separately for each position in each formation that they played and kept only those performances that were similar to each other within themselves. This is for sake of comprehensibility. Performances of players playing across multiple positions all lumped together would pair with a mix of players playing in those positions and the results would be confusing. That said, within the same formation and the same position, there are still many details that may vary which is the variation that we will try and understand through this measure, for instance a 4-2-3-1 at Arsenal may have the players playing very differently than a 4-2-3-1 at Burnley and the similarity measure should be able to understand this and and for the same position suggest a different set of players for the two teams.
+
+I've forcibly included the selected player's statistics and have excluded comparisons between the same match since that would lead to the distance between those performances all being 0 instead of telling us about the match to match variation in his own role and game.
+
+I've additionally added a match proportion, which indicates that in the N X M comparisons between N performances of the selected player and M performances of the player being compared, how often were the two players paired when comparing the teams from the respective games. A high match percent indicates that the latter plays in a similar role as the selected role often while a lower match percent indicates that the player doesn't play in that role very often.
+
+I have excluded comparisons where N or M are below a certain number since that might be too small a sample to analyse. If you can't find some players then it's probably because there count of matches was too low.
+
+I've cut off the list at 30 players for sake of comprehensibility. There may be other players who can also play similarly to the selected player but this 30 is probably a good set to start with.
+
+The performances considered span the 2018-19 season of the EPL, EFL, Bundesliga, Bundesliga2, Ligue1, La Liga, Serie A, Primeira Liga, and Eredivisie.
+
+## Results {.tabset .tabset-fade .tabset-pills}
+
+
+```{r PlayerPlotChunksTemplate, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 15, fig.height = 8, results = 'asis'}
+```
+
+
+```{r child = '/tmp/PlayerComparisons.Rmd'}
+```
+
+
+## Get in touch
+
+Do you have suggestions, comments, new ideas to build on top of this, etc.? I'd love to hear. Find me on Twitter - <a href="https://twitter.com/thecomeonman">@thecomeonman</a>.
