@@ -325,7 +325,4 @@ fPrepareClusterGroupRMD(2)
 
 ## Get in touch
 
-
-## Get in touch
-
 Do you have suggestions, comments, new ideas to build on top of this, etc.? I'd love to hear. Find me on Twitter - <a href="https://twitter.com/thecomeonman">@thecomeonman</a>.
