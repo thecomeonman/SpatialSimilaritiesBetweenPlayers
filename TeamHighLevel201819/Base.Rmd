@@ -1,5 +1,5 @@
 ---
-title: "Similar Passing Style to Real Madrid Players"
+title: "Similar Passing Style to Spurs Players"
 author: "Aditya Kothari"
 output: html_document
 ---
@@ -31,16 +31,18 @@ cPostDataFolderLocation = '/media/ask/Data/Personal/Projects/Personal/NoSuchThin
 source(paste0(cPostCodeFolderLocation, '/Common.R'))
 read_chunk(paste0(cPostCodeFolderLocation, '/CommonChunksTransfers.R'))
 
+
+# cTeamName = 'Ajax'
 # cTeamName = 'Atletico'
+# cTeamName = 'Barcelona'
+# cTeamName = 'Bayern'
+# cTeamName = 'Juventus'
+# cTeamName = 'Liverpool'
 # cTeamName = 'Man City'
 # cTeamName = 'Man Utd'
 # cTeamName = 'PSG'
-# cTeamName = 'Ajax'
-# cTeamName = 'Bayern'
-# cTeamName = 'Juventus'
-# cTeamName = 'Tottenham'
-cTeamName = 'Real Madrid'
 # cTeamName = 'Real Madrid'
+cTeamName = 'Tottenham'
 
 ```
 
