@@ -1,1 +1,1 @@
-Readable webpages <a href="https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/Index.html">here.</a>
+Readable webpages <a href="https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers">here.</a>

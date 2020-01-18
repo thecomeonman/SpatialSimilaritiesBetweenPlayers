@@ -1,5 +1,5 @@
 ---
-title: "Similar Passing Style to Crystal Palace Players"
+title: "Similar Passing Style to Wolves Players"
 author: "Aditya Kothari"
 output: html_document
 ---
@@ -37,14 +37,15 @@ read_chunk(paste0(cPostCodeFolderLocation, '/CommonChunksTransfers.R'))
 # cTeamName = 'Barcelona'
 # cTeamName = 'Bayern'
 # cTeamName = 'Borussia Dortmund'
-cTeamName = 'Crystal Palace'
+# cTeamName = 'Crystal Palace'
 # cTeamName = 'Juventus'
 # cTeamName = 'Liverpool'
 # cTeamName = 'Man City'
 # cTeamName = 'Man Utd'
 # cTeamName = 'PSG'
 # cTeamName = 'Real Madrid'
-# cTeamName = 'Tottenham'
+cTeamName = 'Tottenham'
+# cTeamName = 'Wolves'
 
 ```
 

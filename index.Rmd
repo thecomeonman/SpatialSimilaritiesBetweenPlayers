@@ -172,6 +172,8 @@ Note how the game against WBA as a very different set of points where passes wer
 
 I use this concept and try it to solve some other problem statements -
 
+* <a href = 'https://thecomeonman.github.io/SpursBenficaSimilarityByLiverpool/'>Liverpool trained against Benfica B to practice for the UCL 2018-19 final against Spurs. How similar are Spurs and Benfica?</a>
+
 * <a href = 'https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/SimilarPlayers.html'>Players in similar roles</a>
 
 * <a href = 'https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/PlayerRoles.html'>Marking out player roles</a>
