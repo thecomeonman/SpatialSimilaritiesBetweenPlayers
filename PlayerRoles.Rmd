@@ -61,7 +61,7 @@ In this post, I try to derive the sort of player roles actually demonstrated in 
 
 ## Methodology
 
-Brief partial description <a href="https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/Index.html">here</a>.
+Brief partial description <a href="https://thecomeonman.github.io/SpatialSimilaritiesBetweenPlayers/index.html">here</a>.
 
 Once I have the pairings and the distance, as described in the above link, I prepare an adjacency matrix between each player in each match to be used in a hierarchical clustering algorithm. In cases where the player-match were paired, I set the distance in the adjacency matrix to what it was calculated as. In cases where the player-match were not paired, I set the distance to an artifically very high number. By considering the distance only when players were paired we will avoid clustering players with similar distributions but different roles within context of their team, for eg. a forward playing in a park-the-bus sort of situation and a central midfielder from another game may have very similar distributions but they shouldn't be placed in one cluster because their roles within the context of their teams are different. 
 
